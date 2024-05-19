@@ -602,7 +602,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
         )
 
         local info_lines = wrap(
-            room_name_or_any .. talk.speaker_intro,
+            room_name_or_any(talk) .. talk.speaker_intro,
             font, info_size, a.width - split_x
         )
 
