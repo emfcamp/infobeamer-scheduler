@@ -8,14 +8,14 @@ import defusedxml.ElementTree as ET
 import json
 
 def get_schedule(url, group):
-    def load_events_emf_json(json):
+    def load_events_emf_json(json_str):
         def to_unixtimestamp(dt):
             dt = dt.astimezone(pytz.utc)
             ts = int(calendar.timegm(dt.timetuple()))
             return ts
 
         def all_events():
-            return json.loads(json)
+            return json.loads(json_str)
 
         parsed_events = []
         for event in all_events():
