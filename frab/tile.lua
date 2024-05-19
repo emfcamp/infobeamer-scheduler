@@ -175,21 +175,24 @@ local function check_next_talk()
            now < talk.end_unix and
            talk.start_unix + 15 * 60 > now
         then
-            next_talks[#next_talks+1] = talk
 
-            -- Have a special list of events which are attendee submitted (not from the approved call for participation)
-            if not talk.is_from_cfp
+
+            -- Have separate lists of events which are offical cfp ones and attendee submitted (not from the approved call for participation)
+            if talk.is_from_cfp
             then
+                next_talks[#next_talks+1] = talk
+            else
                 next_attendee_events[#next_attendee_events+1] = talk
             end
         end
 
         -- Starting soon
         if talk.start_unix > now and #next_talks < 20 then
-            next_talks[#next_talks+1] = talk
 
-            if not talk.is_from_cfp
+            if talk.is_from_cfp
             then
+                next_talks[#next_talks+1] = talk
+            else
                 next_attendee_events[#next_attendee_events+1] = talk
             end
         end
