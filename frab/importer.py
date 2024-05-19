@@ -5,8 +5,50 @@ from datetime import timedelta
 
 import dateutil.parser
 import defusedxml.ElementTree as ET
+import json
 
 def get_schedule(url, group):
+    def load_events_emf_json(json):
+        def to_unixtimestamp(dt):
+            dt = dt.astimezone(pytz.utc)
+            ts = int(calendar.timegm(dt.timetuple()))
+            return ts
+
+        def all_events():
+            return json.loads(json)
+
+        parsed_events = []
+        for event in all_events():
+            start = dateutil.parser.parse(event["start_date"])
+
+            end = dateutil.parser.parse(event["end_date"])
+            duration = end - start
+
+            speaker = unicode(event['speaker'].strip()) if  event['speaker'] else None
+
+            parsed_events.append(dict(
+                start = start.astimezone(pytz.utc),
+                start_str = start.strftime('%H:%M'),
+                end_str = end.strftime('%H:%M'),
+                start_unix  = to_unixtimestamp(start),
+                end_unix = to_unixtimestamp(end),
+                duration = int(duration.total_seconds() / 60),
+                title = event['title'],
+                track = event['type'],
+                place = event['venue'],
+                abstract = event['description'],
+                speakers = [
+                    speaker
+                ] if speaker else [],
+                lang = None, # Not in EMF struct
+                id = event['id'],
+                is_from_cfp = event['is_from_cfp']
+                group = group,
+            ))
+        return parsed_events
+
+
+
     def load_events(xml):
         def to_unixtimestamp(dt):
             dt = dt.astimezone(pytz.utc)
@@ -52,7 +94,7 @@ def get_schedule(url, group):
                 place = text_or_empty(event, 'room'),
                 abstract = text_or_empty(event, 'abstract'),
                 speakers = [
-                    unicode(person.text.strip()) 
+                    unicode(person.text.strip())
                     for person in persons
                 ] if persons else [],
                 lang = text_or_empty(event, 'language'),
@@ -64,4 +106,6 @@ def get_schedule(url, group):
     r = requests.get(url)
     r.raise_for_status()
     schedule = r.content
+    if url.endswith('.json'):
+        return load_events_emf_json(schedule)
     return load_events(schedule)
