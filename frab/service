@@ -22,7 +22,7 @@ try:
     sim_date, sim_time = config.time.strip().split()
     d, m, y = sim_date.split('.')
     ho, mi = sim_time.split(':')
-    diff = datetime(int(y), int(m), int(d), int(ho), int(mi), 00) - datetime.utcnow() 
+    diff = datetime(int(y), int(m), int(d), int(ho), int(mi), 00) - datetime.utcnow()
 except:
     diff = timedelta()
 print >>sys.stderr, "timedelta for simulation: %r" % (diff,)
@@ -53,7 +53,7 @@ def main():
             print >>sys.stderr, "done. now ", len(events)
 
         if not events:
-            print >>sys.stderr, "no events" 
+            print >>sys.stderr, "no events"
             time.sleep(60)
             continue
 
@@ -73,6 +73,7 @@ def main():
                 start_unix = event['start_unix'],
                 end_unix = event['end_unix'],
                 id = event['id'],
+                is_from_cfp = event['is_from_cfp']
             ) for event in sorted(events, key=itemgetter('start_unix'))
         ])
 
