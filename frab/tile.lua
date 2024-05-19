@@ -20,6 +20,7 @@ local last_check_min = 0
 local day = 0
 local show_language_tags = true
 local any_venue_room_name = "ANY"
+local emf_event_type_talk = "talk"
 
 local M = {}
 
@@ -162,10 +163,12 @@ local function check_next_talk()
     for idx = 1, #schedule do
         local talk = schedule[idx]
 
-        -- Find next talk
+        -- Find next cfp talk in each venue
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
             if not room_next[talk.place] and
-                talk.start_unix > now - 25 * 60 then
+                talk.type.name = emf_event_type_talk and
+                talk.is_from_cfp and
+                talk.start_unix > now - 25 * 60 then -- TODO check these timings...
                 room_next[talk.place] = talk
             end
         end
@@ -212,7 +215,7 @@ local function check_next_talk()
     other_talks = {}
     for room, talk in pairs(room_next) do
         -- Only include talks in other rooms
-        if (not current_talk or room ~= current_talk.place) and talk.track.name == "talk" then
+        if (not current_talk or room ~= current_talk.place) and talk.track.name == emf_event_type_talk then
             other_talks[#other_talks + 1] = talk
         end
     end
