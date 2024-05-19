@@ -635,6 +635,10 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
         end
+        -- track title
+        local track_text_size = time_size / 2
+        local width = font:width(talk.track.display_name, track_text_size)+track_text_size
+        text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color,.8))
 
         -- track bar
         a.add(anims.moving_image_raw(
