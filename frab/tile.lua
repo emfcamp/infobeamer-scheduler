@@ -84,7 +84,8 @@ function M.updated_schedule_json(new_schedule)
     schedule = new_schedule
     for idx = #schedule, 1, -1 do
         local talk = schedule[idx]
-        if not rooms[talk.place] then
+        -- Hack to allow all venues on if there's a room called ANY
+        if not rooms[talk.place] and not rooms["ANY"] then
             table.remove(schedule, idx)
         else
             if talk.lang ~= "" and show_language_tags then
