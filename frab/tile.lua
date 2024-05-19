@@ -27,6 +27,19 @@ local function rgba(base, a)
     return base[1], base[2], base[3], a
 end
 
+-- Handle the "ANY" room mode where we need to get either the short name
+-- for a defined room, or the venue room from the talk.
+local function room_name_or_any(talk)
+    -- Default for any room
+    local name_short = talk.place
+    -- If room is properly defined in infobeamer, use its short name
+    if rooms[talk.place]
+    then
+        name_short = rooms[talk.place].name_short
+    end
+    return name_short
+end
+
 function M.data_trigger(path, data)
     if path == "day" then
         day = tonumber(data)
@@ -342,7 +355,7 @@ local function view_other_talks(starts, ends, config, x1, y1, x2, y2)
         )
 
         local info_lines = wrap(
-            rooms[talk.place].name_short .. talk.speaker_intro,
+            room_name_or_any(talk) .. talk.speaker_intro,
             font, info_size, a.width - split_x
         )
 
@@ -484,7 +497,7 @@ local function view_all_talks(starts, ends, config, x1, y1, x2, y2)
         )
 
         local info_lines = wrap(
-            rooms[talk.place].name_short .. talk.speaker_intro,
+            room_name_or_any(talk) .. talk.speaker_intro,
             font, info_size, a.width - split_x
         )
 
@@ -584,17 +597,8 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
             font, title_size, a.width - split_x
         )
 
-        local name_short = ""
-        -- If we have allowed any room names, take the room name directly,
-        -- else take the allocated room's short name
-        if not rooms[talk.place] and rooms[any_venue_room_name]
-        then
-            name_short = talk.place
-        else
-            name_short = rooms[talk.place].name_short
-        end
         local info_lines = wrap(
-            name_short .. talk.speaker_intro,
+            room_name_or_any .. talk.speaker_intro,
             font, info_size, a.width - split_x
         )
 
