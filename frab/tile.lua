@@ -587,7 +587,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
         then
             name_short = rooms["ANY"].name_short
         else
-            rooms[talk.place].name_short
+            name_short = rooms[talk.place].name_short
         end
         local info_lines = wrap(
             name_short .. talk.speaker_intro,
