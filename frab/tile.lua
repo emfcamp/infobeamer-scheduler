@@ -166,7 +166,7 @@ local function check_next_talk()
         -- Find next cfp talk in each venue
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
             if not room_next[talk.place] and
-                talk.type.name = emf_event_type_talk and
+                talk.type.name == emf_event_type_talk and
                 talk.is_from_cfp and
                 talk.start_unix > now - 25 * 60 then -- TODO check these timings...
                 room_next[talk.place] = talk
