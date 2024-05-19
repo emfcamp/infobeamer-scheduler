@@ -19,6 +19,7 @@ local other_talks = {}
 local last_check_min = 0
 local day = 0
 local show_language_tags = true
+local any_venue_room_name = "ANY"
 
 local M = {}
 
@@ -85,7 +86,7 @@ function M.updated_schedule_json(new_schedule)
     for idx = #schedule, 1, -1 do
         local talk = schedule[idx]
         -- Hack to allow all venues on if there's a room called ANY
-        if not rooms[talk.place] and not rooms["ANY"] then
+        if not rooms[talk.place] and not rooms[any_venue_room_name] then
             table.remove(schedule, idx)
         else
             if talk.lang ~= "" and show_language_tags then
@@ -583,9 +584,11 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
         )
 
         local name_short = ""
-        if not rooms[talk.place] and rooms["ANY"]
+        -- If we have allowed any room names, take the room name directly,
+        -- else take the allocated room's short name
+        if not rooms[talk.place] and rooms[any_venue_room_name]
         then
-            name_short = rooms["ANY"].name_short
+            name_short = talk.place
         else
             name_short = rooms[talk.place].name_short
         end
