@@ -538,6 +538,7 @@ local function view_all_talks(starts, ends, config, x1, y1, x2, y2)
 end
 
 local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
+    print("Rendering attendee events")
     local title_size = config.font_size or 70
     local align = config.all_align or "left"
     local default_color = {helper.parse_rgb(config.color or "#ffffff")}
@@ -564,13 +565,16 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
     end
     if #schedule == 0 then
         text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
+        print("Schedule is empty")
     elseif #next_attendee_events == 0 and #schedule > 0 and sys.now() > 30 then
         text(split_x, y, "No more events :(", title_size, rgba(default_color,1))
+        print("No more events in the schedule")
     end
+    print("Got events:")
     local now = api.clock.unix()
-
     for idx = 1, #next_attendee_events do
         local talk = next_attendee_events[idx]
+        pp(talk)
 
         local title_lines = wrap(
             talk.title,
