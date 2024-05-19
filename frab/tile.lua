@@ -196,7 +196,7 @@ local function check_next_talk()
     other_talks = {}
     for room, talk in pairs(room_next) do
         -- Only include talks in other rooms
-        if (not current_talk or room ~= current_talk.place) and talk.track == "talk" then
+        if (not current_talk or room ~= current_talk.place) and talk.track.name == "talk" then
             other_talks[#other_talks + 1] = talk
         end
     end
