@@ -180,6 +180,9 @@ local function check_next_talk()
         end
     end
 
+    print("Found " .. #next_attendee_events .. " attendee events")
+    pp(next_attendee_events)
+
     if not current_room then
         return
     end
@@ -201,7 +204,6 @@ local function check_next_talk()
     table.sort(other_talks, sort_talks)
     print("found " .. #other_talks .. " other talks")
     pp(next_talks)
-    pp(next_attendee_events)
 end
 
 local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
