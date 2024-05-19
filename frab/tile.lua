@@ -565,7 +565,6 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
     elseif #next_attendee_events == 0 and #schedule > 0 and sys.now() > 30 then
         text(split_x, y, "No more events :(", title_size, rgba(default_color,1))
     end
-    text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
     local now = api.clock.unix()
 
     for idx = 1, #next_attendee_events do
