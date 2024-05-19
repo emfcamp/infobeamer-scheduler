@@ -165,7 +165,7 @@ local function check_next_talk()
             -- Have a special list of events which are attendee submitted (not from the approved call for participation)
             if not talk.is_from_cfp
             then
-                next_attendee_events[#next_talks+1] = talk
+                next_attendee_events[#next_attendee_events+1] = talk
             end
         end
 
@@ -175,7 +175,7 @@ local function check_next_talk()
 
             if not talk.is_from_cfp
             then
-                next_attendee_events[#next_talks+1] = talk
+                next_attendee_events[#next_attendee_events+1] = talk
             end
         end
     end
