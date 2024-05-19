@@ -395,7 +395,7 @@ local function view_other_talks(starts, ends, config, x1, y1, x2, y2)
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, r,g,b,1)
         else
-            time = string.format("%d min ago", math.ceil(-til/60))
+            time = string.format("%d min ago", math.floor(-til/60))
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, r,g,b,.8)
         end
@@ -530,7 +530,7 @@ local function view_all_talks(starts, ends, config, x1, y1, x2, y2)
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
         else
-            time = string.format("%d min ago", math.ceil(-til/60))
+            time = string.format("%d min ago", math.floor(-til/60))
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
         end
@@ -631,7 +631,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
         else
-            time = string.format("%d min ago", math.ceil(-til/60))
+            time = string.format("%d min ago", math.floor(-til/60))
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
         end
