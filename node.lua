@@ -528,7 +528,7 @@ local function dispatch_to_all_tiles(event, ...)
             local ok, err = xpcall(fn, debug.traceback, ...)
             if not ok then
                 log(
-                    "dispatch_to_all_tiles", 
+                    "dispatch_to_all_tiles",
                     "cannot dispatch '%s' into '%s': %s",
                     event, module_name, err
                 )
@@ -575,8 +575,8 @@ local gl_effects = {
             local enter_t = min(t-starts, 1)
             local exit_t = 1-max(0, 1-(ends-t))
             local effect_value = (
-              -easing[effect_easing](1-enter_t, 0, 1, 1) 
-              +easing[effect_easing](1-exit_t,  0, 1, 1) 
+              -easing[effect_easing](1-enter_t, 0, 1, 1)
+              +easing[effect_easing](1-exit_t,  0, 1, 1)
             )
 
             gl.pushMatrix()
@@ -1140,8 +1140,8 @@ local function TimeTile(asset, config, x1, y1, x2, y2)
         local unit = size/30
 
         local hand_img
-        
-        if clock_style == 1 then 
+
+        if clock_style == 1 then
             hand_img = resource.load_image{
                 file = "hand-1.png",
                 mipmap = true,
@@ -1161,7 +1161,7 @@ local function TimeTile(asset, config, x1, y1, x2, y2)
         --         for i = 0, 55,5 do
         --             if i % 15 == 0 then
         --                 pixel:draw(radius-unit, -unit/2, radius, unit/2, 0.8)
-        --             else 
+        --             else
         --                 pixel:draw(radius-unit/2, -unit/4, radius, unit/4, 0.8)
         --             end
         --             gl.rotate(360/60*5, 0, 0, 1)
@@ -1865,7 +1865,7 @@ local function PageSource()
             local spans = scheduling.spans or {}
 
             if #spans == 0 then
-                log("schedule", "no spans. always schedule")
+                -- log("schedule", "no spans. always schedule")
                 return true
             end
 
@@ -2028,7 +2028,7 @@ local function PageSource()
     local function get_scheduled_pages()
         local pages = {}
         for schedule_id, schedule in ipairs(schedules) do
-            log("schedule", "checking schedule %s (%d)", schedule.name, schedule_id)
+            --log("schedule", "checking schedule %s (%d)", schedule.name, schedule_id)
             if is_scheduled(schedule) then
                 fill_pages_from_schedule(pages, schedule)
             end
