@@ -132,6 +132,7 @@ local function wrap(str, font, size, max_w)
 end
 
 local function check_next_talk()
+    print("Checking next talk")
     local now = api.clock.unix()
     local check_min = math.floor(now / 60)
     if check_min == last_check_min then
@@ -581,8 +582,15 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
             font, title_size, a.width - split_x
         )
 
+        local name_short = ""
+        if not rooms[talk.place] and rooms["ANY"]
+        then
+            name_short = rooms["ANY"].name_short
+        else
+            rooms[talk.place].name_short
+        end
         local info_lines = wrap(
-            rooms[talk.place].name_short .. talk.speaker_intro,
+            name_short .. talk.speaker_intro,
             font, info_size, a.width - split_x
         )
 
