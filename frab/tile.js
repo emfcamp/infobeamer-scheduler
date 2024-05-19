@@ -7,8 +7,9 @@ var config = {
         <div class='col-xs-3'>
           <select class='btn btn-default' v-model="mode">
             <option value="all_talks">All Talks</option>
+            <option value="attendee_events">All Attendee Events</option>
             <option value="next_talk">Next Talk</option>
-            <option value="other_talks">Other Talks</option>
+            <option value="other_talks">Other Talks (Other Venues)</option>
             <option value="room_info">Room Info</option>
             <option value="room">Room Name</option>
             <option value="day">Day</option>
@@ -36,6 +37,18 @@ var config = {
           </select>
         </div>
       </div>
+      <template  v-if='mode == "attendee_events"'>
+        <h4>Attendee Event options</h4>
+        <p>This plugin displays
+        <div class='row'>
+          <div class='col-xs-3'>
+            <select class='btn btn-default' v-model="all_align">
+              <option value="left">Align left</option>
+              <option value="center">Align on separator</option>
+            </select>
+          </div>
+        </div>
+      </template>
       <template  v-if='mode == "all_talks"'>
         <h4>All Talks options</h4>
         <div class='row'>

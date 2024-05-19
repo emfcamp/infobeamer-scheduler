@@ -12,6 +12,7 @@ local schedule = {}
 local tracks = {}
 local rooms = {}
 local next_talks = {}
+local next_attendee_events = {}
 local current_room
 local current_talk
 local other_talks = {}
@@ -134,32 +135,45 @@ local function check_next_talk()
         return
     end
     last_check_min = check_min
-    
+
     -- Search all next talks
     next_talks = {}
+    next_attendee_events = {}
+
     local room_next = {}
     for idx = 1, #schedule do
         local talk = schedule[idx]
 
         -- Find next talk
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
-            if not room_next[talk.place] and 
+            if not room_next[talk.place] and
                 talk.start_unix > now - 25 * 60 then
                 room_next[talk.place] = talk
             end
         end
 
         -- Just started?
-        if now > talk.start_unix and 
+        if now > talk.start_unix and
            now < talk.end_unix and
            talk.start_unix + 15 * 60 > now
         then
-           next_talks[#next_talks+1] = talk
+            next_talks[#next_talks+1] = talk
+
+            -- Have a special list of events which are attendee submitted (not from the approved call for participation)
+            if not talk.is_from_cfp
+            then
+                next_attendee_events[#next_talks+1] = talk
+            end
         end
 
         -- Starting soon
         if talk.start_unix > now and #next_talks < 20 then
             next_talks[#next_talks+1] = talk
+
+            if not talk.is_from_cfp
+            then
+                next_attendee_events[#next_talks+1] = talk
+            end
         end
     end
 
@@ -184,6 +198,7 @@ local function check_next_talk()
     table.sort(other_talks, sort_talks)
     print("found " .. #other_talks .. " other talks")
     pp(next_talks)
+    pp(next_attendee_events)
 end
 
 local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
@@ -400,11 +415,11 @@ local function view_room_info(starts, ends, config, x1, y1, x2, y2)
     local info_lines = current_room.info_lines
 
     local w = 0
-    for idx = 1, #info_lines do 
+    for idx = 1, #info_lines do
         local line = info_lines[idx]
         w = math.max(w, font:width(line.name, font_size))
     end
-    for idx = 1, #info_lines do 
+    for idx = 1, #info_lines do
         local line = info_lines[idx]
         if line == "splitter" then
             y = y + math.floor(font_size/2)
@@ -445,17 +460,113 @@ local function view_all_talks(starts, ends, config, x1, y1, x2, y2)
     local function text(...)
         return a.add(anims.moving_font(S, E, font, ...))
     end
-
     if #schedule == 0 then
         text(split_x, y, "Fetching talks...", title_size, rgba(default_color,1))
     elseif #next_talks == 0 and #schedule > 0 and sys.now() > 30 then
         text(split_x, y, "No more talks :(", title_size, rgba(default_color,1))
     end
-
     local now = api.clock.unix()
 
     for idx = 1, #next_talks do
         local talk = next_talks[idx]
+
+        local title_lines = wrap(
+            talk.title,
+            font, title_size, a.width - split_x
+        )
+
+        local info_lines = wrap(
+            rooms[talk.place].name_short .. talk.speaker_intro,
+            font, info_size, a.width - split_x
+        )
+
+        if y + #title_lines * title_size + info_size > a.height then
+            break
+        end
+
+        -- time
+        local time
+        local til = talk.start_unix - now
+        if til > -60 and til < 60 then
+            time = "Now"
+            local w = font:width(time, time_size)+time_size
+            text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
+        elseif til > 0 and til < 15 * 60 then
+            time = string.format("In %d min", math.floor(til/60))
+            local w = font:width(time, time_size)+time_size
+            text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
+        elseif talk.start_unix > now then
+            time = talk.start_str
+            local w = font:width(time, time_size)+time_size
+            text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
+        else
+            time = string.format("%d min ago", math.ceil(-til/60))
+            local w = font:width(time, time_size)+time_size
+            text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
+        end
+
+        -- track bar
+        a.add(anims.moving_image_raw(
+            S, E, talk.track.background,
+            x+split_x-25, y, x+split_x-12,
+            y + title_size*#title_lines + 3 + #info_lines*info_size
+        ))
+
+        -- title
+        for idx = 1, #title_lines do
+            text(x+split_x, y, title_lines[idx], title_size, rgba(default_color,1))
+            y = y + title_size
+        end
+        y = y + 3
+
+        -- info
+        for idx = 1, #info_lines do
+            text(x+split_x, y, info_lines[idx], info_size, rgba(default_color,.8))
+            y = y + info_size
+        end
+        y = y + 20
+    end
+
+    for now in api.frame_between(starts, ends) do
+        a.draw(now, x1, y1, x2, y2)
+    end
+end
+
+local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
+    local title_size = config.font_size or 70
+    local align = config.all_align or "left"
+    local default_color = {helper.parse_rgb(config.color or "#ffffff")}
+
+    local a = anims.Area(x2 - x1, y2 - y1)
+
+    local S = starts
+    local E = ends
+
+    local time_size = title_size
+    local info_size = math.floor(title_size * 0.8)
+
+    local split_x
+    if align == "left" then
+        split_x = font:width("In 60 min", title_size)+title_size
+    else
+        split_x = 0
+    end
+
+    local x, y = 0, 0
+
+    local function text(...)
+        return a.add(anims.moving_font(S, E, font, ...))
+    end
+    if #schedule == 0 then
+        text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
+    elseif #next_attendee_events == 0 and #schedule > 0 and sys.now() > 30 then
+        text(split_x, y, "No more events :(", title_size, rgba(default_color,1))
+    end
+    text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
+    local now = api.clock.unix()
+
+    for idx = 1, #next_attendee_events do
+        local talk = next_attendee_events[idx]
 
         local title_lines = wrap(
             talk.title,
@@ -575,6 +686,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         other_talks = view_other_talks,
         room_info = view_room_info,
         all_talks = view_all_talks,
+        attendee_events = view_attendee_events,
 
         room = view_room,
         day = view_day,
@@ -588,7 +700,8 @@ function M.can_show(config)
     -- these can always play
     if mode == "day" or
        mode == "clock" or
-       mode == "all_talks"
+       mode == "all_talks" or
+       mode == "attendee_events"
     then
         return true
     end
