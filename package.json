@@ -1,9 +1,9 @@
 {
-    "name": "Scheduled Player",
+    "name": "EMF Scheduled Player",
     "author": "Florian Wesch <fw@info-beamer.com>",
-    "desc": "A schedulable playlist player with custom pages, plugins and animations",
-    "repository": "https://github.com/info-beamer/package-scheduled-player",
-    "version": "19",
+    "desc": "A schedulable playlist player, specialised for EMFCamp's Schedule. Based on Scheduled Player by Florian Wesch <fw@info-beamer.com>",
+    "repository": "https://github.com/mstratford/emf-infobeamer-scheduler",
+    "version": "20",
     "lifecycle": "production",
     "platforms": ["pi/epoch-1", "pi/epoch-2"],
     "runtime": {

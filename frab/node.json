@@ -1,10 +1,10 @@
 {
-    "name": "Plugin: Frab",
+    "name": "Plugin: EMF Schedule",
     "permissions": {
         "network": "Has to fetch schedule from remote site"
     },
     "options": [{
-        "title": "Frab Conference Plugin",
+        "title": "EMF Conference Plugin",
         "type": "section"
     }, {
         "title": "Font",
@@ -18,7 +18,7 @@
         "name": "info_font",
         "type": "font",
         "default": "silkscreen.ttf"
-    }, 
+    },
 
     {
         "title": "Scheduling",
@@ -55,12 +55,12 @@
         "hint": "Show Language Tag at end of talk names",
         "default": true
     }, {
-        "title": "Fahrplan Urls",
+        "title": "Fahrplan/JSON Urls",
         "name": "schedule_urls",
         "doc_link": true,
         "type": "list",
         "itemname": "Url",
-        "hint": "List all fahrplans. They will be merged",
+        "hint": "List all fahrplans/EMF JSON schemas. They will be merged",
         "items": [{
             "title": "Url",
             "ui_width": 9,
