@@ -84,8 +84,13 @@ function M.updated_config_json(config)
 
     tracks = {}
     for idx, track in ipairs(config.tracks) do
+        local display_name = track.name
+        if track.name_short then
+            display_name = track.name_short
+        end
         tracks[track.name] = {
-            name = track.name_short,
+            name = track.name,
+            display_name = display_name,
             background = resource.create_colored_texture(unpack(track.color.rgba)),
             color = {track.color.r, track.color.g, track.color.b},
         }
@@ -707,6 +712,18 @@ local function view_clock(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
+local function view_track_key(starts, ends, config, x1, y1, x2, y2)
+    local font_size = config.font_size / 2 or 35
+    local text_color = {helper.parse_rgb(config.color or "#ffffff")}
+    local r,g,b = 0,0,0
+    local x = 0
+    for track in tracks do
+        local w = font:width(track.display_name, font_size)+font_size
+        text(x, 0, track.display_name, font_size, rgba(text_color, 1))
+        x = x + w
+    end
+end
+
 function M.task(starts, ends, config, x1, y1, x2, y2)
     check_next_talk()
     return ({
@@ -719,6 +736,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         room = view_room,
         day = view_day,
         clock = view_clock,
+        track_key = view_track_key
     })[config.mode or 'all_talks'](starts, ends, config, x1, y1, x2, y2)
 end
 
@@ -729,7 +747,8 @@ function M.can_show(config)
     if mode == "day" or
        mode == "clock" or
        mode == "all_talks" or
-       mode == "attendee_events"
+       mode == "attendee_events" or
+       mode == "track_key"
     then
         return true
     end
