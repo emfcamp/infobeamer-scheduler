@@ -13,23 +13,11 @@
         "type": "font",
         "default": "silkscreen.ttf"
     }, {
-        "title": "Size (px)",
-        "ui_width": 2,
-        "name": "font_size",
-        "type": "integer",
-        "default": 70
-    }, {
         "title": "Info Font",
         "ui_width": 4,
         "name": "info_font",
         "type": "font",
         "default": "silkscreen.ttf"
-    }, {
-        "title": "Size (px)",
-        "ui_width": 2,
-        "name": "info_font_size",
-        "type": "integer",
-        "default": 50
     },
 
 

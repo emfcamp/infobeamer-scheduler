@@ -574,7 +574,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
     local E = ends
 
     local time_size = title_size
-    local info_size = math.floor(title_size * 0.8)
+    local info_size = math.floor(title_size * 0.7)
 
     local split_x
     if align == "left" then
@@ -636,7 +636,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
             text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
         end
         -- track title
-        local track_text_size = math.floor(time_size * (2/3))
+        local track_text_size = math.floor(time_size * 0.7)
         local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
         text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color,.8))
 
