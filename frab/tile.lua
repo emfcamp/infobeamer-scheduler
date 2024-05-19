@@ -22,19 +22,6 @@ local show_language_tags = true
 
 local M = {}
 
-local function dump(o)
-    if type(o) == 'table' then
-       local s = '{ '
-       for k,v in pairs(o) do
-          if type(k) ~= 'number' then k = '"'..k..'"' end
-          s = s .. '['..k..'] = ' .. dump(v) .. ','
-       end
-       return s .. '} '
-    else
-       return tostring(o)
-    end
- end
-
 local function rgba(base, a)
     return base[1], base[2], base[3], a
 end
@@ -115,9 +102,9 @@ function M.updated_schedule_json(new_schedule)
                 name = talk.track,
                 background = fallback_track_background,
             }
-            dump(talk) -- talk is a table
         end
     end
+    pp(schedule)
 end
 
 local function wrap(str, font, size, max_w)
