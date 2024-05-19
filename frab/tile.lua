@@ -163,11 +163,11 @@ local function check_next_talk()
     for idx = 1, #schedule do
         local talk = schedule[idx]
 
-        -- Find next cfp talk in each venue
+        -- Find next talk in each venue (room)
+        -- These are expected to be the stages (and maybe workshops?)
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
             if not room_next[talk.place] and
-                talk.type.name == emf_event_type_talk and
-                talk.is_from_cfp and
+                rooms[talk.place] and
                 talk.start_unix > now - 25 * 60 then -- TODO check these timings...
                 room_next[talk.place] = talk
             end
@@ -179,12 +179,10 @@ local function check_next_talk()
            talk.start_unix + 15 * 60 > now
         then
 
-
-            -- Have separate lists of events which are offical cfp ones and attendee submitted (not from the approved call for participation)
-            if talk.is_from_cfp
+            next_talks[#next_talks+1] = talk
+            -- Have a separate list of events attendee submitted (not from the approved call for participation)
+            if not talk.is_from_cfp
             then
-                next_talks[#next_talks+1] = talk
-            else
                 next_attendee_events[#next_attendee_events+1] = talk
             end
         end
@@ -192,10 +190,10 @@ local function check_next_talk()
         -- Starting soon
         if talk.start_unix > now and #next_talks < 20 then
 
-            if talk.is_from_cfp
+            next_talks[#next_talks+1] = talk
+            -- Have a separate list of events attendee submitted (not from the approved call for participation)
+            if not talk.is_from_cfp
             then
-                next_talks[#next_talks+1] = talk
-            else
                 next_attendee_events[#next_attendee_events+1] = talk
             end
         end
@@ -213,7 +211,7 @@ local function check_next_talk()
 
     -- Prepare talks for other rooms
     other_talks = {}
-    for room, talk in pairs(room_next) do
+    for room, talk in pairs(room_next_cfp) do
         -- Only include talks in other rooms
         if (not current_talk or room ~= current_talk.place) and talk.track.name == emf_event_type_talk then
             other_talks[#other_talks + 1] = talk
