@@ -713,7 +713,8 @@ local function view_clock(starts, ends, config, x1, y1, x2, y2)
 end
 
 local function view_track_key(starts, ends, config, x1, y1, x2, y2)
-    local font_size = config.font_size / 2 or 35
+    local font_size = config.font_size or 35
+    font_size = font_size / 2
     local text_color = {helper.parse_rgb(config.color or "#ffffff")}
     local r,g,b = 0,0,0
     local x = 0
