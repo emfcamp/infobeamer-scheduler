@@ -42,7 +42,7 @@ def get_schedule(url, group):
                 ] if speaker else [],
                 lang = None, # Not in EMF struct
                 id = event['id'],
-                is_from_cfp = event['is_from_cfp']
+                is_from_cfp = event['is_from_cfp'],
                 group = group,
             ))
         return parsed_events
