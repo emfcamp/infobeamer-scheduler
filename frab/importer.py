@@ -43,7 +43,7 @@ def get_schedule(url, group):
                 lang = None, # Not in EMF struct
                 id = event['id'],
                 is_from_cfp = event['is_from_cfp'],
-                group = group,
+                group = group
             ))
         return parsed_events
 
