@@ -27,7 +27,7 @@ def get_schedule(url, group):
             speaker = unicode(event['speaker'].strip()) if  event['speaker'] else None
 
             parsed_events.append(dict(
-                start = start.astimezone(pytz.utc),
+                start = start,
                 start_str = start.strftime('%H:%M'),
                 end_str = end.strftime('%H:%M'),
                 start_unix  = to_unixtimestamp(start),
