@@ -726,7 +726,7 @@ local function view_track_key(starts, ends, config, x1, y1, x2, y2)
     font_size = font_size / 2
     local text_color = {helper.parse_rgb(config.color or "#ffffff")}
     local x = x1
-    for track in tracks do
+    for idx, track in ipairs(tracks) do
         local w = font:width(track.display_name, font_size)+font_size
         text(x, y1, track.display_name, font_size, rgba(text_color, 1))
         x = x + w
