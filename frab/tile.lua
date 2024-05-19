@@ -101,6 +101,7 @@ function M.updated_schedule_json(new_schedule)
                 name = talk.track,
                 background = fallback_track_background,
             }
+            print(talk)
         end
     end
 end
