@@ -23,8 +23,9 @@ def get_schedule(url, group):
             end = dateutil.parser.parse(event["end_date"])
             duration = end - start
 
-            speaker = unicode(event['speaker'].strip()) if  event['speaker'] else None
-
+            speaker = event['speaker'].strip() if event['speaker'] else None
+            if speaker and event["pronouns"]:
+                speaker += f" - {event['pronouns']}"
             parsed_events.append(dict(
                 start = start,
                 start_str = start.strftime('%H:%M'),
