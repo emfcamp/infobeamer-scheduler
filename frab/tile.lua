@@ -21,6 +21,7 @@ local day = 0
 local show_language_tags = true
 local any_venue_room_name = "ANY"
 local emf_event_type_talk = "talk"
+local just_started_mins = 5 -- Amount of time a event has "just started"
 
 local M = {}
 
@@ -52,6 +53,7 @@ function M.updated_config_json(config)
     font = resource.load_font(api.localized(config.font.asset_name))
     info_font = resource.load_font(api.localized(config.info_font.asset_name))
     show_language_tags = config.show_language_tags
+    just_started_mins = config.just_started_mins
 
     rooms = {}
     current_room = nil
@@ -181,7 +183,7 @@ local function check_next_talk()
         -- Just started?
         if now > talk.start_unix and
            now < talk.end_unix and
-           talk.start_unix + 15 * 60 > now
+           talk.start_unix + just_started_mins * 60 > now
         then
 
             next_talks[#next_talks+1] = talk

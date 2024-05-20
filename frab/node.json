@@ -26,7 +26,7 @@
         "type": "section"
     },{
         "title": "Time Zone",
-        "ui_width": 4,
+        "ui_width": 3,
         "name": "timezone",
         "type": "select",
         "hint": "The timezone",
@@ -42,14 +42,21 @@
         "default": "UTC"
     }, {
         "title": "Day 0",
-        "ui_width": 4,
+        "ui_width": 2,
         "name": "day0",
         "type": "string",
         "hint": "Day 0 (DD.MM.YYYY)",
         "default": "26.12.2017"
     }, {
-        "title": "Show Language Tags",
-        "ui_width": 4,
+        "title": "Mins ago",
+        "ui_width": 2,
+        "name": "just_started_mins",
+        "type": "integer",
+        "hint": "Number of mins ago that an event is considered just started, with the potential to go meaninfully catch it.",
+        "default": 5
+    }, {
+        "title": "Language Tags",
+        "ui_width": 2,
         "name": "show_language_tags",
         "type": "boolean",
         "itemname": "show_language_tags",
