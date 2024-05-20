@@ -264,10 +264,15 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
         col2 = 0
     end
 
+    local y_start = y
+
     if #schedule == 0 then
-        text(col2, y, "Fetching talks...", time_size, rgba(default_color,1))
+        text(col2, y, "Fetching events...", time_size, rgba(default_color,1))
+        -- Add the height of the text
+        y = y + time_size
     elseif not current_talk then
-        text(col2, y, "Nope. That's it.", time_size, rgba(default_color,1))
+        text(col2, y, "No more scheduled events in this venue.", time_size, rgba(default_color,1))
+        y = y + time_size
     else
         -- Time
         text(col1, y, current_talk.start_str, time_size, rgba(default_color,1))
@@ -308,7 +313,6 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
         text(col1, y_track_title, current_talk.track.display_name, track_size, rgba(current_talk.track.color, 1))
 
         -- Title
-        local y_start = y
 
         local lines = wrap(current_talk.title, font, title_size, a.width - col2)
         for idx = 1, math.min(5, #lines) do
@@ -339,12 +343,13 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
             text(col2, y, current_talk.age_range, speaker_size, rgba(default_color,.8))
         end
 
-        -- Add the height of the age range, then draw the track bar
+        -- Add the height of the age range
         y = y + speaker_size
-        a.add(anims.moving_image_raw(
-            S, E, current_talk.track.background, col2 - 25, y_start, col2-12, y
-        ))
     end
+    -- Then draw the track bar
+    a.add(anims.moving_image_raw(
+        S, E, current_talk.track.background, col2 - 25, y_start, col2-12, y
+    ))
 
     for now in api.frame_between(starts, ends) do
         a.draw(now, x1, y1, x2, y2)
