@@ -255,6 +255,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
     local align = config.next_align or "left"
     local abstract = config.next_abstract
     local default_color = {helper.parse_rgb(config.color or "#ffffff")}
+    local warning_color = {helper.parse_rgb("#2EADD9")}
 
     local a = anims.Area(x2 - x1, y2 - y1)
 
@@ -375,13 +376,21 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
         end
 
         y = y + age_range_size
+
+        local color = default_color;
+        local warning = "";
         -- Age range
         if string.len(current_talk.age_range) > 0 then
-            text(col2, y, current_talk.age_range, age_range_size, rgba(default_color,.7))
+            warning = current_talk.age_range
         end
+        if string.len(current_talk.content_note) > 0 then
+            warning = warning .. " - ⚠ Content Note"
+            color = warning_color
+        end
+        text(col2, y, current_talk.age_range, age_range_size, rgba(color,.7))
 
         -- Add the height of the age range
-        y = y + speaker_size
+        y = y + age_range_size
     end
     -- Then draw the track bar
     local background = fallback_track_background
