@@ -375,8 +375,6 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             y = y + speaker_size
         end
 
-        y = y + age_range_size
-
         local color = default_color;
         local warning = "";
         -- Age range
@@ -387,10 +385,10 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             warning = warning .. " - ⚠ Content Note"
             color = warning_color
         end
-        text(col2, y, current_talk.age_range, age_range_size, rgba(color,.7))
-
-        -- Add the height of the age range
-        y = y + age_range_size
+        if warning ~= "" then
+            text(col2, y, warning, age_range_size, rgba(color,.7))
+            y = y + age_range_size
+        end
     end
     -- Then draw the track bar
     local background = fallback_track_background
