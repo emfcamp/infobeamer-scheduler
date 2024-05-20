@@ -345,7 +345,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             -- try and make the abstrack smaller till it fits on the screen nicely.
             local max_lines = 6
             local max_full_height = (initial_abstract_size * max_lines)
-            while ((abstract_size * #lines > max_full_height) and (abstract_size > 40)) do
+            while ((abstract_size * #lines > max_full_height) and (abstract_size > 50)) do
                 abstract_size = math.floor(abstract_size * 0.8)
                 lines = wrap(current_talk.abstract, font, abstract_size, a.width - col2)
                 print("shrunk abstract to ", #lines, " ", abstract_size)
@@ -356,6 +356,9 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
                 lines[max_lines] = lines[max_lines]:sub(1, -3) .. "..."
                 print("still too big ", max_lines)
                 print(#lines[max_lines])
+            else
+                -- It now fits, so don't limit to 6 lines anymore
+                max_lines = 1000
             end
             for idx = 1, math.min(max_lines, #lines) do
                 text(col2, y, lines[idx], abstract_size, rgba(default_color,1))
