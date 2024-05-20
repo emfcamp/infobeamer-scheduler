@@ -462,6 +462,9 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
             break
         end
 
+        -- Start of this event's height
+        local y_start = y
+
         -- time
         local time
         local til = talk.start_unix - now
@@ -487,12 +490,6 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
         text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color, 1))
 
-        -- track bar
-        a.add(anims.moving_image_raw(
-            S, E, talk.track.background,
-            x+split_x-25, y, x+split_x-12,
-            y + title_size*#title_lines + 3 + #info_lines*info_size
-        ))
 
         -- title
         for idx = 1, #title_lines do
@@ -509,10 +506,20 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
 
         -- Age range
         if talk.age_range then
+            y = y + 2 -- Needed a little bit more padding at small font
             text(x+split_x, y, talk.age_range, age_range_size, rgba(default_color,.7))
             -- Add the height of the age range
             y = y + age_range_size
         end
+
+        -- track bar
+        a.add(anims.moving_image_raw(
+            S, E, talk.track.background,
+            x+split_x-25, y_start, x+split_x-12,
+            y
+        ))
+
+        -- Space ready for the next event
         y = y + 20
     end
 
