@@ -352,7 +352,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
 
         y = y + speaker_size
         -- Age range
-        if current_talk.age_range then
+        if string.len(current_talk.age_range) > 0 then
             text(col2, y, current_talk.age_range, speaker_size, rgba(default_color,.8))
         end
 
@@ -519,7 +519,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         local duration = duration_text(talk.duration)
 
 
-        if talk.age_range then
+        if string.len(talk.age_range) > 0 then
             duration = duration .. " - " .. talk.age_range
         end
 
