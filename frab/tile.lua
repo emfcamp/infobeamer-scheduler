@@ -505,7 +505,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         end
 
         -- duration / Age range
-        local duration = current_talk.duration
+        local duration = talk.duration
         if duration and duration > 60 then
             duration = string.format("%d hrs", string.format("%.2f",(duration/60)))
         elseif duration > 0 then
