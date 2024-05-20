@@ -207,8 +207,8 @@ local function check_next_talk()
         end
     end
 
+    print("Found " .. #next_talks .. " next events")
     print("Found " .. #next_attendee_events .. " attendee events")
-    pp(next_attendee_events)
 
     if not current_room then
         return
@@ -220,9 +220,11 @@ local function check_next_talk()
     -- Prepare talks for other rooms
     -- These are ones that have just started in other venues or next up in them.
     other_talks = {}
-    for idx, talk in pairs(next_talks) do
+    for idx = 1, #next_talks do
+        local talk = next_talks[idx]
+        pp(talk)
         -- Only include events in other defined rooms
-        if ((not current_talk or talk.room ~= current_talk.place) and
+        if (talk.room ~= current_talk.place and
             rooms[talk.room])
         then
             other_talks[#other_talks + 1] = talk
