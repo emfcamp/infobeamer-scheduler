@@ -155,12 +155,12 @@ local function wrap(str, font, size, max_w)
 end
 
 local function check_next_talk()
-    print("Checking next talk")
     local now = api.clock.unix()
-    local check_min = math.floor(now / 60)
+    local check_min = math.floor(now / 60) -- Only update schedule every 60 seconds
     if check_min == last_check_min then
         return
     end
+    print("Checking next talk")
     last_check_min = check_min
 
     -- Search all next talks
