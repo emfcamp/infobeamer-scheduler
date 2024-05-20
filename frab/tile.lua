@@ -288,10 +288,10 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
 
         local y_duration = y_time + (time_size * 2)
         local duration = current_talk.duration
-        if duration and duration > 180*60 then
-            duration = string.format("%d hr", math.floor(delta/3600))
-        elseif delta > 0 then
-            duration = string.format("%d mins", math.floor(delta/60)+1)
+        if duration and duration > 60 then
+            duration = string.format("%d hrs", string.format("%.2f",(duration/60)))
+        elseif duration > 0 then
+            duration = string.format("%d mins", duration)
         end
         text(col1, y_duration, duration, math.floor(time_size * 0.7), rgba(default_color, .8))
 
