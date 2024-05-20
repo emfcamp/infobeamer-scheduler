@@ -287,8 +287,16 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
         text(col1, y_time, talk_time, time_size, rgba(default_color,1))
 
         local y_track_title = y_time + (time_size * 2) -- Have a nice gap between time and track
+
+        -- Scale event track name to the width we've got in the left column
+        local track_width = 10000 -- crazy max size
+        local track_size  = time_size
+        while (track_width > col2 - 50) do
+            track_size = math.floor(track_size * 0.7)
+            track_width = font:width(current_talk.track.display_name, track_size)
+        end
         -- track title
-        text(col1, y_track_title, current_talk.track.display_name, time_size, rgba(current_talk.track.color, 1))
+        text(col1, y_track_title, current_talk.track.display_name, track_size, rgba(current_talk.track.color, 1))
 
         -- Title
         local y_start = y
