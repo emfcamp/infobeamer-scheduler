@@ -224,7 +224,7 @@ local function check_next_talk()
         local talk = next_talks[idx]
         pp(talk)
         -- Only include events in other defined rooms
-        if (talk.room ~= current_talk.place and
+        if ((not current_talk or talk.room ~= current_talk.place) and
             rooms[talk.room])
         then
             other_talks[#other_talks + 1] = talk
