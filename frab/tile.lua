@@ -224,8 +224,8 @@ local function check_next_talk()
         local talk = next_talks[idx]
         pp(talk)
         -- Only include events in other defined rooms
-        if ((not current_talk or talk.room ~= current_talk.place) and
-            rooms[talk.room])
+        if ((not current_talk or talk.place ~= current_talk.place) and
+            rooms[talk.place])
         then
             other_talks[#other_talks + 1] = talk
         end
@@ -236,7 +236,6 @@ local function check_next_talk()
     end
     table.sort(other_talks, sort_talks)
     print("found " .. #other_talks .. " other talks")
-    pp(next_talks)
 end
 
 local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
