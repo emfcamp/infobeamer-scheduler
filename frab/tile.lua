@@ -343,7 +343,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             local lines = wrap(current_talk.abstract, font, abstract_size, a.width - col2)
             print("shrunk abstract to ", #lines, " ", abstract_size)
             -- try and make the abstrack smaller till it fits on the screen nicely.
-            local max_lines = 6
+            local max_lines = 7
             local max_full_height = (initial_abstract_size * max_lines)
             while ((abstract_size * #lines > max_full_height) and (abstract_size > 50)) do
                 abstract_size = math.floor(abstract_size * 0.8)
