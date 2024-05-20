@@ -43,7 +43,7 @@ def get_schedule(url, group):
                 lang = '', # Not in EMF struct
                 id = str(event['id']),
                 is_from_cfp = event['is_from_cfp'],
-                age_range = event['age_range'] or "Family Friendly" if event['is_family_friendly'] else "",
+                age_range = event['age_range'] if ('age_range' in event and event['age_range']) else ("Family Friendly" if ('is_family_friendly' in event and event['is_family_friendly']) else ""),
                 group = group
             ))
         return parsed_events
