@@ -301,7 +301,8 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
         if delta > 180*60 then
             talk_time = string.format("in %d h", math.floor(delta/3600))
         elseif delta > 0 then
-            talk_time = string.format("in %d min", math.floor(delta/60)+1)
+            -- ceil so that if the clock shows 13:50, it's 10 mins away, not 9.
+            talk_time = string.format("in %d min", math.ceil(delta/60)+1)
         else
             talk_time = "Now"
         end
@@ -482,7 +483,8 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
         elseif til > 0 and til < 15 * 60 then
-            time = string.format("In %d min", math.floor(til/60))
+            -- ceil so that if the clock shows 13:50, it's 10 mins away, not 9.
+            time = string.format("In %d min", math.ceil(til/60))
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
         elseif talk.start_unix > now then
