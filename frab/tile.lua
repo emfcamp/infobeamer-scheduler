@@ -231,7 +231,7 @@ local function check_next_talk()
     pp(next_talks)
 end
 
-local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
+local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
     local font_size = config.font_size or 70
     local align = config.next_align or "left"
     local abstract = config.next_abstract
@@ -362,7 +362,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_other_talks(starts, ends, config, x1, y1, x2, y2)
+local function view_other_talks(starts, ends, config, x1, y1, x2, y2, events)
     local title_size = config.font_size or 70
     local align = config.other_align or "left"
     local r,g,b = helper.parse_rgb(config.color or "#ffffff")
@@ -467,7 +467,7 @@ local function view_other_talks(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_room_info(starts, ends, config, x1, y1, x2, y2)
+local function view_room_info(starts, ends, config, x1, y1, x2, y2, events)
     local font_size = config.font_size or 70
     local r,g,b = helper.parse_rgb(config.color or "#ffffff")
 
@@ -505,104 +505,7 @@ local function view_room_info(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_all_talks(starts, ends, config, x1, y1, x2, y2)
-    local title_size = config.font_size or 70
-    local align = config.all_align or "left"
-    local default_color = {helper.parse_rgb(config.color or "#ffffff")}
-
-    local a = anims.Area(x2 - x1, y2 - y1)
-
-    local S = starts
-    local E = ends
-
-    local time_size = title_size
-    local info_size = math.floor(title_size * 0.8)
-
-    local split_x
-    if align == "left" then
-        split_x = font:width("In 60 min", title_size)+title_size
-    else
-        split_x = 0
-    end
-
-    local x, y = 0, 0
-
-    local function text(...)
-        return a.add(anims.moving_font(S, E, font, ...))
-    end
-    if #schedule == 0 then
-        text(split_x, y, "Fetching talks...", title_size, rgba(default_color,1))
-    elseif #next_talks == 0 and #schedule > 0 and sys.now() > 30 then
-        text(split_x, y, "No more talks :(", title_size, rgba(default_color,1))
-    end
-    local now = api.clock.unix()
-
-    for idx = 1, #next_talks do
-        local talk = next_talks[idx]
-
-        local title_lines = wrap(
-            talk.title,
-            font, title_size, a.width - split_x
-        )
-
-        local info_lines = wrap(
-            room_name_or_any(talk) .. talk.speaker_intro,
-            font, info_size, a.width - split_x
-        )
-
-        if y + #title_lines * title_size + info_size > a.height then
-            break
-        end
-
-        -- time
-        local time
-        local til = talk.start_unix - now
-        if til > -60 and til < 60 then
-            time = "Now"
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
-        elseif til > 0 and til < 15 * 60 then
-            time = string.format("In %d min", math.floor(til/60))
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
-        elseif talk.start_unix > now then
-            time = talk.start_str
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, rgba(default_color, 1))
-        else
-            time = string.format("%d min ago", math.floor(-til/60))
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
-        end
-
-        -- track bar
-        a.add(anims.moving_image_raw(
-            S, E, talk.track.background,
-            x+split_x-25, y, x+split_x-12,
-            y + title_size*#title_lines + 3 + #info_lines*info_size
-        ))
-
-        -- title
-        for idx = 1, #title_lines do
-            text(x+split_x, y, title_lines[idx], title_size, rgba(default_color,1))
-            y = y + title_size
-        end
-        y = y + 3
-
-        -- info
-        for idx = 1, #info_lines do
-            text(x+split_x, y, info_lines[idx], info_size, rgba(default_color,.8))
-            y = y + info_size
-        end
-        y = y + 20
-    end
-
-    for now in api.frame_between(starts, ends) do
-        a.draw(now, x1, y1, x2, y2)
-    end
-end
-
-local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
+local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
     print("Rendering attendee events")
     local title_size = config.font_size or 70
     local align = config.all_align or "left"
@@ -631,14 +534,14 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
     if #schedule == 0 then
         text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
         print("Schedule is empty")
-    elseif #next_attendee_events == 0 and #schedule > 0 and sys.now() > 30 then
+    elseif #events == 0 and #schedule > 0 and sys.now() > 30 then
         text(split_x, y, "No more events :(", title_size, rgba(default_color,1))
         print("No more events in the schedule")
     end
     print("Got events:")
     local now = api.clock.unix()
-    for idx = 1, #next_attendee_events do
-        local talk = next_attendee_events[idx]
+    for idx = 1, #events do
+        local talk = events[idx]
         pp(talk)
 
         local title_lines = wrap(
@@ -707,7 +610,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_room(starts, ends, config, x1, y1, x2, y2)
+local function view_room(starts, ends, config, x1, y1, x2, y2, events)
     local font_size = config.font_size or 70
     local r,g,b = helper.parse_rgb(config.color or "#ffffff")
 
@@ -717,7 +620,7 @@ local function view_room(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_day(starts, ends, config, x1, y1, x2, y2)
+local function view_day(starts, ends, config, x1, y1, x2, y2, events)
     local font_size = config.font_size or 70
     local r,g,b = helper.parse_rgb(config.color or "#ffffff")
     local align = config.day_align or "left"
@@ -737,7 +640,7 @@ local function view_day(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_clock(starts, ends, config, x1, y1, x2, y2)
+local function view_clock(starts, ends, config, x1, y1, x2, y2, events)
     local font_size = config.font_size or 70
     local r,g,b = helper.parse_rgb(config.color or "#ffffff")
     local align = config.clock_align or "left"
@@ -756,7 +659,7 @@ local function view_clock(starts, ends, config, x1, y1, x2, y2)
     end
 end
 
-local function view_track_key(starts, ends, config, x1, y1, x2, y2)
+local function view_track_key(starts, ends, config, x1, y1, x2, y2, events)
 
     local a = anims.Area(x2 - x1, y2 - y1)
 
@@ -779,18 +682,23 @@ end
 
 function M.task(starts, ends, config, x1, y1, x2, y2)
     check_next_talk()
+    local event_datasource = {
+        all_talks = next_talks,
+        attendee_events = next_attendee_events,
+        none = nil
+    }
     return ({
         next_talk = view_next_talk,
         other_talks = view_other_talks,
         room_info = view_room_info,
-        all_talks = view_all_talks,
-        attendee_events = view_attendee_events,
+        all_talks = view_event_list,
+        attendee_events = view_event_list,
 
         room = view_room,
         day = view_day,
         clock = view_clock,
         track_key = view_track_key
-    })[config.mode or 'all_talks'](starts, ends, config, x1, y1, x2, y2)
+    })[config.mode or 'all_talks'](starts, ends, config, x1, y1, x2, y2, event_datasource[config.mode or 'none'])
 end
 
 function M.can_show(config)
