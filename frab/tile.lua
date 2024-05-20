@@ -412,7 +412,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
 
     local time_size = title_size
     local info_size = math.floor(title_size * 0.7)
-    local age_range_size =  math.floor(info_size * 0.8)
+    local duration_size = math.floor(info_size * 0.8)
 
     local split_x
     if align == "left" then
@@ -504,13 +504,22 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
             y = y + info_size
         end
 
-        -- Age range
-        if talk.age_range then
-            y = y + 2 -- Needed a little bit more padding at small font
-            text(x+split_x, y, talk.age_range, age_range_size, rgba(default_color,.7))
-            -- Add the height of the age range
-            y = y + age_range_size
+        -- duration / Age range
+        local duration = current_talk.duration
+        if duration and duration > 60 then
+            duration = string.format("%d hrs", string.format("%.2f",(duration/60)))
+        elseif duration > 0 then
+            duration = string.format("%d mins", duration)
         end
+
+        if talk.age_range then
+            duration = duration .. " - " .. talk.age_range
+        end
+
+        y = y + 2 -- Needed a little bit more padding at small font
+        text(x+split_x, y, duration, duration_size, rgba(default_color,.7))
+        -- Add the height of the duration text
+        y = y + duration_size
 
         -- track bar
         a.add(anims.moving_image_raw(
