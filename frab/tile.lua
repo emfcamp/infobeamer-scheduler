@@ -324,7 +324,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
                 text(col2, y, lines[idx], abstract_size, rgba(default_color,1))
                 y = y + abstract_size
             end
-            y = y + 20
+            y = y + 30
         end
 
         -- Speakers
@@ -333,7 +333,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
             y = y + speaker_size
         end
 
-        y = y + (speaker_size * 2)
+        y = y + speaker_size
         -- Age range
         if current_talk.age_range then
             text(col2, y, current_talk.age_range, speaker_size, rgba(default_color,.8))
