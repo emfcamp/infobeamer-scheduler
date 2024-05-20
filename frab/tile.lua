@@ -508,7 +508,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         end
 
         -- Age range
-        if current_talk.age_range then
+        if talk.age_range then
             text(x+split_x, y, talk.age_range, age_range_size, rgba(default_color,.7))
             -- Add the height of the age range
             y = y + age_range_size
