@@ -7,7 +7,8 @@ var config = {
         <div class='col-xs-3'>
           <select class='btn btn-default' v-model="mode">
             <option value="all_talks">All Events from Defined Rooms</option>
-            <option value="attendee_events">All Attendee Events</option>
+            <option value="attendee_events">All non-CfP Events</option>
+            <option value="next_workshops">All CfP Workshops</option>
             <option value="next_talk">Next Talk</option>
             <option value="other_talks">Other Talks (Other Venues)</option>
             <option value="room_info">Room Info</option>

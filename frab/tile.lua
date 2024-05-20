@@ -12,12 +12,11 @@ local schedule = {}
 local tracks = {}
 local rooms = {}
 local next_talks = {} -- List of all events up next from any defined room
-local next_from_other_rooms = {} -- List of events up next from any defined room but this one
 local next_attendee_events = {}
+local next_workshops = {} -- List of upcoming cfp events which are workshows
 local current_room
 local current_talk
 local other_talks = {}
-local last_check_min = 0
 local day = 0
 local show_language_tags = true
 local any_venue_room_name = "ANY"
@@ -174,6 +173,7 @@ local function check_next_talk()
     -- Search all next talks
     next_talks = {}
     next_attendee_events = {}
+    next_workshops = {}
 
     local room_now = {} -- Event that appears as up next or now in each venue
     for idx = 1, #schedule do
@@ -200,6 +200,8 @@ local function check_next_talk()
             if not talk.is_from_cfp
             then
                 next_attendee_events[#next_attendee_events+1] = talk
+            elseif string.find(talk.type, "workshops") then
+                next_workshops[#next_workshops+1] = talk
             end
         end
 
@@ -212,6 +214,9 @@ local function check_next_talk()
             if not talk.is_from_cfp
             then
                 next_attendee_events[#next_attendee_events+1] = talk
+            elseif string.find(talk.type, "workshops") then
+                next_workshops[#next_workshops+1] = talk
+            end
             end
         end
     end
@@ -620,6 +625,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         other_talks = other_talks,
         all_talks = next_talks,
         attendee_events = next_attendee_events,
+        next_workshops = next_workshops,
         none = nil
     }
     local mode = config.mode or 'all_talks'
@@ -630,6 +636,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         room_info = view_room_info,
         all_talks = view_event_list,
         attendee_events = view_event_list,
+        next_workshops = view_event_list,
 
         room = view_room,
         day = view_day,
@@ -646,6 +653,7 @@ function M.can_show(config)
        mode == "clock" or
        mode == "all_talks" or
        mode == "attendee_events" or
+       mode == "next_workshops" or
        mode == "track_key"
     then
         return true
