@@ -362,111 +362,6 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
     end
 end
 
-local function view_other_talks(starts, ends, config, x1, y1, x2, y2, events)
-    local title_size = config.font_size or 70
-    local align = config.other_align or "left"
-    local r,g,b = helper.parse_rgb(config.color or "#ffffff")
-
-    local a = anims.Area(x2 - x1, y2 - y1)
-
-    local S = starts
-    local E = ends
-
-    local time_size = title_size
-    local info_size = math.floor(title_size * 0.8)
-
-    local split_x
-    if align == "left" then
-        split_x = font:width("In 60 min", title_size)+title_size
-    else
-        split_x = 0
-    end
-
-    local x, y = 0, 0
-
-    local function text(...)
-        return a.add(anims.moving_font(S, E, font, ...))
-    end
-
-    if #other_talks == 0 and sys.now() > 30 then
-        text(split_x, y, "No other talks", title_size, r,g,b,1)
-    end
-
-    local now = api.clock.unix()
-
-    local time_sep = false
-    for idx = 1, #other_talks do
-        local talk = other_talks[idx]
-
-        local title_lines = wrap(
-            talk.title,
-            font, title_size, a.width - split_x
-        )
-
-        local info_lines = wrap(
-            room_name_or_any(talk) .. talk.speaker_intro,
-            font, info_size, a.width - split_x
-        )
-
-        if y + #title_lines * title_size + info_size > a.height then
-            break
-        end
-
-        if not time_sep and talk.start_unix > api.clock.unix() then
-            if idx > 0 then
-                y = y + 20
-            end
-            time_sep = true
-        end
-
-        -- time
-        local time
-        local til = talk.start_unix - now
-        if til > -60 and til < 60 then
-            time = "Now"
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, r,g,b,1)
-        elseif til > 0 and til < 15 * 60 then
-            time = string.format("In %d min", math.floor(til/60))
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, r,g,b,1)
-        elseif talk.start_unix > now then
-            time = talk.start_str
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, r,g,b,1)
-        else
-            time = string.format("%d min ago", math.floor(-til/60))
-            local w = font:width(time, time_size)+time_size
-            text(x+split_x-w, y, time, time_size, r,g,b,.8)
-        end
-
-        -- track bar
-        a.add(anims.moving_image_raw(
-            S, E, talk.track.background,
-            x+split_x-25, y, x+split_x-12,
-            y + title_size*#title_lines + 3 + #info_lines*info_size
-        ))
-
-        -- title
-        for idx = 1, #title_lines do
-            text(x+split_x, y, title_lines[idx], title_size, r,g,b,1)
-            y = y + title_size
-        end
-        y = y + 3
-
-        -- info
-        for idx = 1, #info_lines do
-            text(x+split_x, y, info_lines[idx], info_size, r,g,b,.8)
-            y = y + info_size
-        end
-        y = y + 20
-    end
-
-    for now in api.frame_between(starts, ends) do
-        a.draw(now, x1, y1, x2, y2)
-    end
-end
-
 local function view_room_info(starts, ends, config, x1, y1, x2, y2, events)
     local font_size = config.font_size or 70
     local r,g,b = helper.parse_rgb(config.color or "#ffffff")
@@ -683,13 +578,14 @@ end
 function M.task(starts, ends, config, x1, y1, x2, y2)
     check_next_talk()
     local event_datasource = {
+        other_talks = other_talks,
         all_talks = next_talks,
         attendee_events = next_attendee_events,
         none = nil
     }
     return ({
         next_talk = view_next_talk,
-        other_talks = view_other_talks,
+        other_talks = view_event_list,
         room_info = view_room_info,
         all_talks = view_event_list,
         attendee_events = view_event_list,
