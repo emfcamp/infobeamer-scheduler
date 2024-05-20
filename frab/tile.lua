@@ -235,7 +235,6 @@ local function check_next_talk()
     other_talks = {}
     for idx = 1, #next_talks do
         local talk = next_talks[idx]
-        pp(talk)
         -- Only include events in other defined rooms
         if ((not current_talk or talk.place ~= current_talk.place) and
             rooms[talk.place])
@@ -296,6 +295,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
         text(col2 - 120, y, ":(", time_size, rgba(default_color,1))
         y = y + time_size
     else
+        pp(current_talk)
         -- Time
         text(col1, y, current_talk.start_str, time_size, rgba(default_color,1))
 
@@ -477,7 +477,6 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
     local now = api.clock.unix()
     for idx = 1, #events do
         local talk = events[idx]
-        pp(talk)
 
         local title_lines = wrap(
             talk.title,
