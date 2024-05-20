@@ -190,7 +190,8 @@ local function check_next_talk()
         end
 
         -- Starting soon
-        if talk.start_unix > now and #next_talks < 20 then
+        -- Filter out events more than 23 hours away to hide confusing events which are the same hour but tomorrow!
+        if talk.start_unix > now and (talk.start_unix < now + (60*60*23)) and #next_talks < 20 then
 
             next_talks[#next_talks+1] = talk
             -- Have a separate list of events attendee submitted (not from the approved call for participation)
