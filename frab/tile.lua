@@ -299,7 +299,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
         local y_duration = y_time + (time_size * 2)
         local duration = current_talk.duration
         if duration and duration > 60 then
-            duration = string.format("%d hrs", string.format("%.2f",(duration/60)))
+            duration = string.format("%f hrs", string.format("%.1f",(duration/60)))
         elseif duration > 0 then
             duration = string.format("%d mins", duration)
         end
@@ -509,7 +509,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         -- duration / Age range
         local duration = talk.duration
         if duration and duration > 60 then
-            duration = string.format("%d hrs", string.format("%.2f",(duration/60)))
+            duration = string.format("%f hrs", string.format("%.1f",(duration/60)))
         elseif duration > 0 then
             duration = string.format("%d mins", duration)
         end
