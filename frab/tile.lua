@@ -412,6 +412,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
 
     local time_size = title_size
     local info_size = math.floor(title_size * 0.7)
+    local age_range_size =  math.floor(info_size * 0.8)
 
     local split_x
     if align == "left" then
@@ -504,6 +505,13 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         for idx = 1, #info_lines do
             text(x+split_x, y, info_lines[idx], info_size, rgba(default_color,.8))
             y = y + info_size
+        end
+
+        -- Age range
+        if current_talk.age_range then
+            text(x+split_x, y, current_talk.age_range, age_range_size, rgba(default_color,.7))
+            -- Add the height of the age range
+            y = y + age_range_size
         end
         y = y + 20
     end
