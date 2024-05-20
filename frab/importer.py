@@ -25,7 +25,7 @@ def get_schedule(url, group):
 
             speaker = event['speaker'].strip() if event['speaker'] else None
             if speaker and event["pronouns"]:
-                speaker += f" - {event['pronouns']}"
+                speaker += " - " + event['pronouns']
             parsed_events.append(dict(
                 start = start,
                 start_str = start.strftime('%H:%M'),
@@ -100,7 +100,8 @@ def get_schedule(url, group):
                 ] if persons else [],
                 lang = text_or_empty(event, 'language'),
                 id = event.attrib["id"],
-                group = group,
+                is_from_cfp = False,
+                group = group
             ))
         return parsed_events
 
