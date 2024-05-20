@@ -401,7 +401,6 @@ local function view_room_info(starts, ends, config, x1, y1, x2, y2, events)
 end
 
 local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
-    print("Rendering attendee events")
     local title_size = config.font_size or 70
     local align = config.all_align or "left"
     local default_color = {helper.parse_rgb(config.color or "#ffffff")}
@@ -432,6 +431,15 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
     elseif #events == 0 and #schedule > 0 and sys.now() > 30 then
         text(split_x, y, "No more events :(", title_size, rgba(default_color,1))
         print("No more events in the schedule")
+        -- Time
+        text(split_x - 120, y, ":(", time_size, rgba(default_color,1))
+        y = y + time_size
+        -- Then draw the track bar
+        a.add(anims.moving_image_raw(
+            S, E, fallback_track_background,
+            split_x-25, y, split_x-12,
+            y + title_size + 3
+        ))
     end
     print("Got events:")
     local now = api.clock.unix()
@@ -583,6 +591,8 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         attendee_events = next_attendee_events,
         none = nil
     }
+    local mode = config.mode or 'all_talks'
+    print("Rendering screen:", mode)
     return ({
         next_talk = view_next_talk,
         other_talks = view_event_list,
