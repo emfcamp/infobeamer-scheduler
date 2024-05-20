@@ -344,12 +344,14 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             local lines = wrap(current_talk.abstract, font, abstract_size, a.width - col2)
             -- try and make the abstrack smaller till it fits on the screen nicely.
             local max_lines = 6
-            while ((abstract_size * #lines > (initial_abstract_size * max_lines)) and (abstract_size > 40)) do
+            local max_full_height = (initial_abstract_size * max_lines)
+            while ((abstract_size * #lines > max_full_height) and (abstract_size > 40)) do
                 abstract_size = math.floor(abstract_size * 0.8)
                 lines = wrap(current_talk.abstract, font, abstract_size, a.width - col2)
             end
-            -- If we made it down to tiny 30px font size, just elipse it.
-            if #lines > max_lines then
+            -- If we made it down to tiny 40px font size, just elipse it.
+            if (abstract_size * #lines > max_full_height) then
+                max_lines = (max.floor(max_full_height / abstract_size))
                 lines[max_lines] = lines[max_lines]:sub(1, -3) .. "..."
             end
             for idx = 1, math.min(max_lines, #lines) do
