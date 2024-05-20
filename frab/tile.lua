@@ -155,6 +155,7 @@ local function wrap(str, font, size, max_w)
 end
 
 local function check_next_talk()
+    local now = api.clock.unix()
     print("Checking next talk")
 
     -- Search all next talks
@@ -444,7 +445,6 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         ))
         y = y + time_size
     end
-    print("Got events:")
     local now = api.clock.unix()
     for idx = 1, #events do
         local talk = events[idx]
