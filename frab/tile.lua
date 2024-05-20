@@ -255,7 +255,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
     local align = config.next_align or "left"
     local abstract = config.next_abstract
     local default_color = {helper.parse_rgb(config.color or "#ffffff")}
-    local warning_color = {helper.parse_rgb("#2EADD9")}
+    local warning_color = {helper.parse_rgb("#F9E200")}
 
     local a = anims.Area(x2 - x1, y2 - y1)
 
@@ -382,7 +382,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             warning = current_talk.age_range
         end
         if string.len(current_talk.content_note) > 0 then
-            warning = warning .. " - ⚠ Content Note"
+            warning = warning .. " ~ Check Content Note"
             color = warning_color
         end
         if warning ~= "" then
