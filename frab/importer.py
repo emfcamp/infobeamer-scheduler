@@ -24,6 +24,9 @@ def get_schedule(url, group):
             duration = end - start
 
             speaker = event['speaker'].strip() if event['speaker'] else None
+            # Remove stuff like "Arcade with Arcade"
+            if speaker and event['venue'].strip() == speaker:
+                speaker = None
             if speaker and event["pronouns"]:
                 speaker += " - " + event['pronouns']
             parsed_events.append(dict(
