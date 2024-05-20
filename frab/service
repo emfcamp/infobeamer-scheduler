@@ -73,7 +73,8 @@ def main():
                 start_unix = event['start_unix'],
                 end_unix = event['end_unix'],
                 id = event['id'],
-                is_from_cfp = event['is_from_cfp']
+                is_from_cfp = event['is_from_cfp'],
+                age_range = event['age_range']
             ) for event in sorted(events, key=itemgetter('start_unix'))
         ])
 
