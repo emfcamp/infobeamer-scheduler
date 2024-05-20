@@ -11,7 +11,8 @@ local fallback_track_background = resource.create_colored_texture(.5,.5,.5,1)
 local schedule = {}
 local tracks = {}
 local rooms = {}
-local next_talks = {}
+local next_talks = {} -- List of all events up next from any defined room
+local next_from_other_rooms = {} -- List of events up next from any defined room but this one
 local next_attendee_events = {}
 local current_room
 local current_talk
@@ -166,17 +167,17 @@ local function check_next_talk()
     next_talks = {}
     next_attendee_events = {}
 
-    local room_next = {}
+    local room_now = {} -- Event that appears as up next or now in each venue
     for idx = 1, #schedule do
         local talk = schedule[idx]
 
-        -- Find next talk in each venue (room)
+        -- Find now/next talk in each venue (room)
         -- These are expected to be the stages (and maybe workshops?)
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
-            if not room_next[talk.place] and
+            if not room_now[talk.place] and
                 rooms[talk.place] and
                 talk.start_unix > now - 25 * 60 then -- TODO check these timings...
-                room_next[talk.place] = talk
+                room_now[talk.place] = talk
             end
         end
 
@@ -214,13 +215,16 @@ local function check_next_talk()
     end
 
     -- Find current/next talk for my room
-    current_talk = room_next[current_room.name]
+    current_talk = room_now[current_room.name]
 
     -- Prepare talks for other rooms
+    -- These are ones that have just started in other venues or next up in them.
     other_talks = {}
-    for room, talk in pairs(room_next) do
+    for idx, talk in pairs(next_talks) do
         -- Only include events in other defined rooms
-        if (not current_talk or room ~= current_talk.place) then
+        if ((not current_talk or talk.room ~= current_talk.place) and
+            rooms[talk.room])
+        then
             other_talks[#other_talks + 1] = talk
         end
     end
