@@ -351,7 +351,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             end
             -- If we made it down to tiny 40px font size, just elipse it.
             if (abstract_size * #lines > max_full_height) then
-                max_lines = (max.floor(max_full_height / abstract_size))
+                max_lines = (math.floor(max_full_height / abstract_size))
                 lines[max_lines] = lines[max_lines]:sub(1, -3) .. "..."
             end
             for idx = 1, math.min(max_lines, #lines) do
