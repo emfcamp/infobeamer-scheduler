@@ -48,12 +48,12 @@ var config = {
         <h4>Attendee Event options</h4>
         <p>This mode displays all non-cfp events coming up.</p>
         <div class='row'>
-          <div class='col-xs-3'>
-            <select class='btn btn-default' v-model="all_align">
-              <option value="left">Align left</option>
-              <option value="center">Align on separator</option>
-            </select>
-          </div>
+        </div>
+      </template>
+      <template  v-if='mode == "next_workshops"'>
+        <h4>Next workshops options</h4>
+        <p>This mode displays all cfp workshops coming up.</p>
+        <div class='row'>
         </div>
       </template>
       <template  v-if='mode == "all_talks"'>
