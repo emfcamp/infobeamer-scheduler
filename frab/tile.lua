@@ -347,8 +347,12 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
         y = y + speaker_size
     end
     -- Then draw the track bar
+    local background = fallback_track_background
+    if current_talk then
+        background = current_talk.track.background
+    end
     a.add(anims.moving_image_raw(
-        S, E, current_talk.track.background or fallback_track_background, col2 - 25, y_start, col2-12, y
+        S, E, background, col2 - 25, y_start, col2-12, y
     ))
 
     for now in api.frame_between(starts, ends) do
