@@ -339,6 +339,8 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
             text(col2, y, current_talk.age_range, speaker_size, rgba(default_color,.8))
         end
 
+        -- Add the height of the age range, then draw the track bar
+        y = y + speaker_size
         a.add(anims.moving_image_raw(
             S, E, current_talk.track.background, col2 - 25, y_start, col2-12, y
         ))
