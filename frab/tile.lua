@@ -217,7 +217,6 @@ local function check_next_talk()
             elseif string.find(talk.type, "workshops") then
                 next_workshops[#next_workshops+1] = talk
             end
-            end
         end
     end
 
