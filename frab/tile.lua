@@ -43,6 +43,19 @@ local function room_name_or_any(talk)
     return name_short
 end
 
+local function duration_text(duration)
+    if duration and duration > 60 then
+        local hours = (duration/60)
+        if hours == math.floor(hours) then
+            return string.format("%d hrs", hours)
+        else
+            return string.format("%.1f hrs", hours)
+        end
+    elseif duration > 0 then
+        return string.format("%d mins", duration)
+    end
+end
+
 function M.data_trigger(path, data)
     if path == "day" then
         day = tonumber(data)
@@ -297,13 +310,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
         text(col1, y_time, talk_time, time_size, rgba(default_color,1))
 
         local y_duration = y_time + (time_size * 2)
-        local duration = current_talk.duration
-        if duration and duration > 60 then
-            duration = string.format("%f hrs", string.format("%.1f",(duration/60)))
-        elseif duration > 0 then
-            duration = string.format("%d mins", duration)
-        end
-        text(col1, y_duration, duration, math.floor(time_size * 0.7), rgba(default_color, .8))
+        text(col1, y_duration, duration_text(current_talk.duration), math.floor(time_size * 0.7), rgba(default_color, .8))
 
         local y_track_title = y_time + (time_size * 3) -- Have a nice gap between time and track
 
@@ -507,12 +514,8 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         end
 
         -- duration / Age range
-        local duration = talk.duration
-        if duration and duration > 60 then
-            duration = string.format("%f hrs", string.format("%.1f",(duration/60)))
-        elseif duration > 0 then
-            duration = string.format("%d mins", duration)
-        end
+        local duration = duration_text(talk.duration)
+
 
         if talk.age_range then
             duration = duration .. " - " .. talk.age_range
