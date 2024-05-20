@@ -286,6 +286,10 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
         local y_time = y+time_size
         text(col1, y_time, talk_time, time_size, rgba(default_color,1))
 
+        local y_track_title = y_time + (time_size * 2) -- Have a nice gap between time and track
+        -- track title
+        text(col1, y_track_title, current_talk.track.display_name, time_size, rgba(current_talk.track.color, 1))
+
         -- Title
         local y_start = y
 
@@ -638,7 +642,7 @@ local function view_attendee_events(starts, ends, config, x1, y1, x2, y2)
         -- track title
         local track_text_size = math.floor(time_size * 0.7)
         local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
-        text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color,.8))
+        text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color, 1))
 
         -- track bar
         a.add(anims.moving_image_raw(
