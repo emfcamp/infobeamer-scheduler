@@ -200,7 +200,7 @@ local function check_next_talk()
             if not talk.is_from_cfp
             then
                 next_attendee_events[#next_attendee_events+1] = talk
-            elseif string.find(talk.track, "workshops") then
+            elseif string.find(talk.track.name, "workshops") then
                 next_workshops[#next_workshops+1] = talk
             end
         end
@@ -214,7 +214,7 @@ local function check_next_talk()
             if not talk.is_from_cfp
             then
                 next_attendee_events[#next_attendee_events+1] = talk
-            elseif string.find(talk.track, "workshops") then
+            elseif string.find(talk.track.name, "workshops") then
                 next_workshops[#next_workshops+1] = talk
             end
         end
