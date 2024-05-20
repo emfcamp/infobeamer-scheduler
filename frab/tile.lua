@@ -273,6 +273,7 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
     local title_size = font_size
     local abstract_size = math.floor(font_size * 0.8)
     local speaker_size = math.floor(font_size * 0.8)
+    local age_range_size = math.floor(font_size * 0.7)
 
     local dummy = "in XXXX min"
     if align == "left" then
@@ -373,10 +374,10 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
             y = y + speaker_size
         end
 
-        y = y + speaker_size
+        y = y + age_range_size
         -- Age range
         if string.len(current_talk.age_range) > 0 then
-            text(col2, y, current_talk.age_range, speaker_size, rgba(default_color,.8))
+            text(col2, y, current_talk.age_range, age_range_size, rgba(default_color,.7))
         end
 
         -- Add the height of the age range
