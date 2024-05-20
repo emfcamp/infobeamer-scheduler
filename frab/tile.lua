@@ -429,17 +429,17 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
         print("Schedule is empty")
     elseif #events == 0 and #schedule > 0 and sys.now() > 30 then
-        text(split_x, y, "No more events :(", title_size, rgba(default_color,1))
+        text(split_x, y, "No more scheduled events.", title_size, rgba(default_color,1))
         print("No more events in the schedule")
         -- Time
         text(split_x - 120, y, ":(", time_size, rgba(default_color,1))
-        y = y + time_size
         -- Then draw the track bar
         a.add(anims.moving_image_raw(
             S, E, fallback_track_background,
             split_x-25, y, split_x-12,
-            y + title_size + 3
+            y + time_size + 3
         ))
+        y = y + time_size
     end
     print("Got events:")
     local now = api.clock.unix()
