@@ -273,6 +273,8 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2)
     elseif not current_talk then
         text(col2, y, "No more scheduled events in this venue.", time_size, rgba(default_color,1))
         y = y + time_size
+        -- Time
+        text(col1, y, ":(", time_size, rgba(default_color,1))
     else
         -- Time
         text(col1, y, current_talk.start_str, time_size, rgba(default_color,1))
