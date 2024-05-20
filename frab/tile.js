@@ -8,9 +8,9 @@ var config = {
           <select class='btn btn-default' v-model="mode">
             <option value="all_talks">All Events from Defined Rooms</option>
             <option value="attendee_events">All non-CfP Events</option>
-            <option value="next_workshops">All CfP Workshops</option>
-            <option value="next_talk">Next Talk</option>
-            <option value="other_talks">Other Talks (Other Venues)</option>
+            <option value="next_workshops">Next CfP Workshops</option>
+            <option value="next_talk">Next in this Room</option>
+            <option value="other_talks">Next in other defined Rooms</option>
             <option value="room_info">Room Info</option>
             <option value="room">Room Name</option>
             <option value="day">Day</option>
