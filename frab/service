@@ -76,6 +76,7 @@ def main():
                 is_from_cfp = event['is_from_cfp'],
                 age_range = event['age_range'],
                 content_note = event['content_note']
+                requires_ticket = event['requires_ticket']
             ) for event in sorted(events, key=itemgetter('start_unix'))
         ])
 
