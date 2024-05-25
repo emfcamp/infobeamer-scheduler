@@ -31,8 +31,9 @@
         "type": "select",
         "hint": "The timezone",
         "options": [
-            ["UTC", "UTC (or Schedule is in local time)"],
-            ["Europe/Berlin", "Europa / Berlin"],
+            ["UTC", "UTC"],
+            ["BST", "Europe / London"],
+            ["Europe/Berlin", "Europe / Berlin"],
             ["US/Central", "US / Central"],
             ["US/Eastern", "US / Eastern"],
             ["US/Michigan", "US / Michigan"],
