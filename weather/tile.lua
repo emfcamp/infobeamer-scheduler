@@ -256,10 +256,11 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
             color_shader:deactivate()
         end
 
+        local display_offset = 0 -- now that we show weather for each 2 hours, offset needs replacing.
         -- temperature bars
         for offset, info in ipairs(weather.next_24) do
             if math.fmod(offset,2) == 0 then -- Only show every other hour for EMF
-                local x = x1 + w_24 * offset
+                local x = x1 + w_24 * display_offset
                 local temp = info.temp
                 local bar_top, bar_bottom = min_max(
                     graph_24_base_y - temp_to_graph(temp) * graph_24_height,
@@ -274,14 +275,16 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
                     color_shader:use{color = rgba_bright(1,.75,.2,.7, dark)}
                 end
                 bg:draw(x+.5, bar_top, x+w_24-.5, bar_bottom)
+                display_offset = display_offset + 1
             end
         end
         color_shader:deactivate()
 
         -- weather icons
+        display_offset = 0
         for offset, info in ipairs(weather.next_24) do
             if math.fmod(offset,2) == 0 then
-                local x = x1 + w_24 * offset
+                local x = x1 + w_24 * display_offset
                 local temp = info.temp
                 local bar_top, bar_bottom = min_max(
                     graph_24_base_y - temp_to_graph(temp) * graph_24_height,
@@ -299,28 +302,33 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
                         x, bar_top-w_24, x+w_24, bar_top
                     )
                 end
+                display_offset = display_offset + 1
             end
         end
 
         -- precipitation bars
         color_shader:use{color = {.3,.3,1,.4}}
+        display_offset = 0
         for offset, info in ipairs(weather.next_24) do
+
             if math.fmod(offset,2) == 0 then
-                local x = x1 + w_24 * offset
+                local x = x1 + w_24 * display_offset
                 local temp = info.temp
                 local precip = info.precipitation
 
                 if precip > 0 then
                     bg:draw(x+1, graph_24_base_y - precip/20 * graph_24_height, x+w_24-1, graph_24_base_y)
                 end
+                display_offset = display_offset + 1
             end
         end
         color_shader:deactivate()
 
         -- temperature text and time
+        display_offset = 0
         for offset, info in ipairs(weather.next_24) do
             if math.fmod(offset,2) == 0 then
-                local x = x1 + w_24 * offset
+                local x = x1 + w_24 * display_offset
                 local temp = info.temp
                 local bar_top, bar_bottom = min_max(
                     graph_24_base_y - temp_to_graph(temp) * graph_24_height,
@@ -339,6 +347,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
                         centered(x+w_24/2, bar_top+4, temp_string, label_size, 1,1,1,1)
                     end
                 end
+                display_offset = display_offset + 1
             end
 
         end
