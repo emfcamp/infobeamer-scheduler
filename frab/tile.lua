@@ -21,6 +21,7 @@ local day = 0
 local show_language_tags = true
 local any_venue_room_name = "ANY"
 local emf_event_type_talk = "talk"
+local emf_event_type_workshop = "workshop"
 local just_started_mins = 5 -- Amount of time a event has "just started"
 local filter_23_hrs = false
 
@@ -201,7 +202,7 @@ local function check_next_talk()
             if not talk.is_from_cfp
             then
                 next_attendee_events[#next_attendee_events+1] = talk
-            elseif string.find(talk.track.name, "workshop") then
+            elseif string.find(talk.track.name, emf_event_type_workshop) then
                 next_workshops[#next_workshops+1] = talk
             end
         end
@@ -219,7 +220,7 @@ local function check_next_talk()
             if not talk.is_from_cfp
             then
                 next_attendee_events[#next_attendee_events+1] = talk
-            elseif string.find(talk.track.name, "workshops") then
+            elseif string.find(talk.track.name, emf_event_type_workshop) then
                 next_workshops[#next_workshops+1] = talk
             end
         end
