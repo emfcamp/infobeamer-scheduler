@@ -32,7 +32,7 @@
         "hint": "The timezone",
         "options": [
             ["UTC", "UTC"],
-            ["BST", "Europe / London"],
+            ["Europe/London", "Europe / London"],
             ["Europe/Berlin", "Europe / Berlin"],
             ["US/Central", "US / Central"],
             ["US/Eastern", "US / Eastern"],
