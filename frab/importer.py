@@ -2,7 +2,7 @@ import pytz
 import requests
 import calendar
 from datetime import timedelta
-
+import datetime
 import dateutil.parser
 import dateutil.tz
 import defusedxml.ElementTree as ET
@@ -11,8 +11,7 @@ import json
 def get_schedule(url, group, timezone = "UTC"):
     def load_events_emf_json(json_str):
         def to_unixtimestamp(dt):
-            ts = int(calendar.timegm(dt.timetuple()))
-            return ts
+            return int((dt - datetime.datetime(1970,1,1)).total_seconds)
 
         def all_events():
             return json.loads(json_str)
