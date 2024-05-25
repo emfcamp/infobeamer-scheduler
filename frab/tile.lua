@@ -539,7 +539,7 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
 
         -- "/u1F39F" 🎫 U+1F3AB
         -- Requires ticket
-        text(x+split_x-track_text_size, y+(time_size*2), "🎫", track_text_size, rgba({245, 116, 20},1))
+        text(x+split_x-300, y+track_text_size, "🎫", track_text_size, rgba({245, 116, 20},1))
         -- title
         for idx = 1, #title_lines do
             text(x+split_x, y, title_lines[idx], title_size, rgba(default_color,1))
