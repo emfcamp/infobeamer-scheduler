@@ -55,6 +55,14 @@
         "hint": "Number of mins ago that an event is considered just started, with the potential to go meaninfully catch it.",
         "default": 5
     }, {
+        "title": "Filter +23h",
+        "ui_width": 2,
+        "name": "filter_23_hrs",
+        "type": "boolean",
+        "itemname": "filter_23_hrs",
+        "hint": "Hide events in Upcoming which are more than 23hrs away to stop confusion between now and tomorrow events.",
+        "default": true
+    }, {
         "title": "Language Tags",
         "ui_width": 2,
         "name": "show_language_tags",

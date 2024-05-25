@@ -22,6 +22,7 @@ local show_language_tags = true
 local any_venue_room_name = "ANY"
 local emf_event_type_talk = "talk"
 local just_started_mins = 5 -- Amount of time a event has "just started"
+local filter_23_hrs = false
 
 local M = {}
 
@@ -67,7 +68,7 @@ function M.updated_config_json(config)
     info_font = resource.load_font(api.localized(config.info_font.asset_name))
     show_language_tags = config.show_language_tags
     just_started_mins = config.just_started_mins
-
+    filter_23_hrs = config.filter_23_hrs
     rooms = {}
     current_room = nil
     for idx, room in ipairs(config.rooms) do
@@ -207,7 +208,11 @@ local function check_next_talk()
 
         -- Starting soon
         -- Filter out events more than 23 hours away to hide confusing events which are the same hour but tomorrow!
-        if talk.start_unix > now and (talk.start_unix < now + (60*60*23)) and #next_talks < 20 then
+        local is_within_time = true;
+        if filter_23_hrs then
+            is_within_time = talk.start_unix < now + (60*60*23)
+        end
+        if talk.start_unix > now and (is_within_time) and #next_talks < 20 then
 
             next_talks[#next_talks+1] = talk
             -- Have a separate list of events attendee submitted (not from the approved call for participation)
