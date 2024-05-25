@@ -319,7 +319,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
 
         -- temperature text and time
         for offset, info in ipairs(weather.next_24) do
-            if math.fmod(offset,1) == 0 then
+            if math.fmod(offset,2) == 0 then
                 local x = x1 + w_24 * offset
                 local temp = info.temp
                 local bar_top, bar_bottom = min_max(
