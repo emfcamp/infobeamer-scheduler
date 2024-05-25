@@ -11,7 +11,10 @@ import json
 def get_schedule(url, group, timezone = "UTC"):
     def load_events_emf_json(json_str):
         def to_unixtimestamp(dt):
-            return int((dt - datetime.datetime(1970,1,1, tzinfo = pytz.UTC)).total_seconds)
+            dt = start.astimezone(pytz.utc)
+            ts = int(calendar.timegm(dt.timetuple()))
+            return ts
+
 
         def all_events():
             return json.loads(json_str)
