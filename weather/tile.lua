@@ -167,7 +167,7 @@ local function current_line(starts, ends, config, x1, y1, x2, y2)
 
     local w = x2 - x1
     local h = y2 - y1
-            
+
     local header_size = math.floor(h)
 
     for now in api.frame_between(starts, ends) do
@@ -212,7 +212,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
 
     local w = x2 - x1
     local h = y2 - y1
-    local w_24 = w/25
+    local w_24 = w/13 -- Display every 2 hours plus key so it can be readable at EMF.
 
     local max_temp = -100
     local min_temp = 100
@@ -258,78 +258,86 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
 
         -- temperature bars
         for offset, info in ipairs(weather.next_24) do
-            local x = x1 + w_24 * offset
-            local temp = info.temp
-            local bar_top, bar_bottom = min_max(
-                graph_24_base_y - temp_to_graph(temp) * graph_24_height,
-                graph_24_base_y - temp_to_graph(0) * graph_24_height
-            )
+            if math.fmod(offset,2) == 0 then -- Only show every other hour for EMF
+                local x = x1 + w_24 * offset
+                local temp = info.temp
+                local bar_top, bar_bottom = min_max(
+                    graph_24_base_y - temp_to_graph(temp) * graph_24_height,
+                    graph_24_base_y - temp_to_graph(0) * graph_24_height
+                )
 
-            local dark = clamp(0.05, 1, (info.sun / 20) + 0.1)
+                local dark = clamp(0.05, 1, (info.sun / 20) + 0.1)
 
-            if temp < 0 then
-                color_shader:use{color = rgba_bright(.2,.75,1,.7, dark)}
-            else
-                color_shader:use{color = rgba_bright(1,.75,.2,.7, dark)}
+                if temp < 0 then
+                    color_shader:use{color = rgba_bright(.2,.75,1,.7, dark)}
+                else
+                    color_shader:use{color = rgba_bright(1,.75,.2,.7, dark)}
+                end
+                bg:draw(x+.5, bar_top, x+w_24-.5, bar_bottom)
             end
-            bg:draw(x+.5, bar_top, x+w_24-.5, bar_bottom)
         end
         color_shader:deactivate()
 
         -- weather icons
         for offset, info in ipairs(weather.next_24) do
-            local x = x1 + w_24 * offset
-            local temp = info.temp
-            local bar_top, bar_bottom = min_max(
-                graph_24_base_y - temp_to_graph(temp) * graph_24_height,
-                graph_24_base_y - temp_to_graph(0) * graph_24_height
-            )
-
-            local is_night = info.sun < 0
-
-            if temp < 0 then
-                icons.get(info.symbol, is_night):draw(
-                    x, bar_bottom, x+w_24, bar_bottom+w_24
+            if math.fmod(offset,2) == 0 then
+                local x = x1 + w_24 * offset
+                local temp = info.temp
+                local bar_top, bar_bottom = min_max(
+                    graph_24_base_y - temp_to_graph(temp) * graph_24_height,
+                    graph_24_base_y - temp_to_graph(0) * graph_24_height
                 )
-            else
-                icons.get(info.symbol, is_night):draw(
-                    x, bar_top-w_24, x+w_24, bar_top
-                )
+
+                local is_night = info.sun < 0
+
+                if temp < 0 then
+                    icons.get(info.symbol, is_night):draw(
+                        x, bar_bottom, x+w_24, bar_bottom+w_24
+                    )
+                else
+                    icons.get(info.symbol, is_night):draw(
+                        x, bar_top-w_24, x+w_24, bar_top
+                    )
+                end
             end
         end
 
         -- precipitation bars
         color_shader:use{color = {.3,.3,1,.4}}
         for offset, info in ipairs(weather.next_24) do
-            local x = x1 + w_24 * offset
-            local temp = info.temp
-            local precip = info.precipitation
+            if math.fmod(offset,2) == 0 then
+                local x = x1 + w_24 * offset
+                local temp = info.temp
+                local precip = info.precipitation
 
-            if precip > 0 then
-                bg:draw(x+1, graph_24_base_y - precip/20 * graph_24_height, x+w_24-1, graph_24_base_y)
+                if precip > 0 then
+                    bg:draw(x+1, graph_24_base_y - precip/20 * graph_24_height, x+w_24-1, graph_24_base_y)
+                end
             end
         end
         color_shader:deactivate()
 
         -- temperature text and time
         for offset, info in ipairs(weather.next_24) do
-            local x = x1 + w_24 * offset
-            local temp = info.temp
-            local bar_top, bar_bottom = min_max(
-                graph_24_base_y - temp_to_graph(temp) * graph_24_height,
-                graph_24_base_y - temp_to_graph(0) * graph_24_height
-            )
-            local precip = info.precipitation
+            if math.fmod(offset,1) == 0 then
+                local x = x1 + w_24 * offset
+                local temp = info.temp
+                local bar_top, bar_bottom = min_max(
+                    graph_24_base_y - temp_to_graph(temp) * graph_24_height,
+                    graph_24_base_y - temp_to_graph(0) * graph_24_height
+                )
+                local precip = info.precipitation
 
-            local hour_string = hour_to_string(info.time.hour)
-            centered(x+w_24/2, graph_24_base_y-label_size, hour_string, label_size, 1,1,1,1)
+                local hour_string = hour_to_string(info.time.hour)
+                centered(x+w_24/2, graph_24_base_y-label_size, hour_string, label_size, 1,1,1,1)
 
-            if label_size > 10 and (offset == 1 or offset == 24 or temp == min_temp or temp == max_temp) then
-                local temp_string = temp_to_string(temp, temp_mode)
-                if temp < 0 then
-                    centered(x+w_24/2, bar_bottom-4-label_size, temp_string, label_size, 1,1,1,1)
-                else
-                    centered(x+w_24/2, bar_top+4, temp_string, label_size, 1,1,1,1)
+                if label_size > 10 and (offset == 1 or offset == 24 or temp == min_temp or temp == max_temp) then
+                    local temp_string = temp_to_string(temp, temp_mode)
+                    if temp < 0 then
+                        centered(x+w_24/2, bar_bottom-4-label_size, temp_string, label_size, 1,1,1,1)
+                    else
+                        centered(x+w_24/2, bar_top+4, temp_string, label_size, 1,1,1,1)
+                    end
                 end
             end
 
