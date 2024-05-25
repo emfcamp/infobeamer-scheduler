@@ -4,10 +4,11 @@ import calendar
 from datetime import timedelta
 
 import dateutil.parser
+import dateutil.tz
 import defusedxml.ElementTree as ET
 import json
 
-def get_schedule(url, group):
+def get_schedule(url, group, timezone = "UTC"):
     def load_events_emf_json(json_str):
         def to_unixtimestamp(dt):
             ts = int(calendar.timegm(dt.timetuple()))
@@ -18,9 +19,11 @@ def get_schedule(url, group):
 
         parsed_events = []
         for event in all_events():
-            start = dateutil.parser.parse(event["start_date"])
+            # EMF schedule is in BST. The unix "now" calculations expect UTC
+            BST = dateutil.tz.gettz('Europe/London')
+            start = dateutil.parser.parse(event["start_date"] + " BST", tzinfos={'BST': BST})
 
-            end = dateutil.parser.parse(event["end_date"])
+            end = dateutil.parser.parse(event["end_date"] + " BST", tzinfos={'BST': BST})
             duration = end - start
 
             speaker = event['speaker'].strip() if event['speaker'] else None
