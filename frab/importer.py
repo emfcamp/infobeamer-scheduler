@@ -53,7 +53,7 @@ def get_schedule(url, group, timezone = "UTC"):
                 is_from_cfp = event['is_from_cfp'],
                 age_range = event['age_range'] if ('age_range' in event and event['age_range']) else ("Family Friendly" if ('is_family_friendly' in event and event['is_family_friendly']) else ""),
                 content_note = event['content_note'] if ('content_note' in event) else "",
-                requires_ticket = event['requires_ticket'] if 'requires_ticket' in event else False
+                requires_ticket = event['requires_ticket'] if 'requires_ticket' in event else False,
                 group = group
             ))
         return parsed_events
