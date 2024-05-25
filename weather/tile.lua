@@ -256,7 +256,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
             color_shader:deactivate()
         end
 
-        local display_offset = 0 -- now that we show weather for each 2 hours, offset needs replacing.
+        local display_offset = 1 -- now that we show weather for each 2 hours, offset needs replacing.
         -- temperature bars
         for offset, info in ipairs(weather.next_24) do
             if math.fmod(offset,2) == 0 then -- Only show every other hour for EMF
@@ -281,7 +281,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
         color_shader:deactivate()
 
         -- weather icons
-        display_offset = 0
+        display_offset = 1
         for offset, info in ipairs(weather.next_24) do
             if math.fmod(offset,2) == 0 then
                 local x = x1 + w_24 * display_offset
@@ -308,7 +308,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
 
         -- precipitation bars
         color_shader:use{color = {.3,.3,1,.4}}
-        display_offset = 0
+        display_offset = 1
         for offset, info in ipairs(weather.next_24) do
 
             if math.fmod(offset,2) == 0 then
@@ -325,7 +325,7 @@ local function forecast_24(starts, ends, config, x1, y1, x2, y2)
         color_shader:deactivate()
 
         -- temperature text and time
-        display_offset = 0
+        display_offset = 1
         for offset, info in ipairs(weather.next_24) do
             if math.fmod(offset,2) == 0 then
                 local x = x1 + w_24 * display_offset
