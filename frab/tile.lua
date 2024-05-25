@@ -478,7 +478,11 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         text(split_x, y, "Fetching events...", title_size, rgba(default_color,1))
         print("Schedule is empty")
     elseif #events == 0 and #schedule > 0 and sys.now() > 30 then
-        text(split_x, y, "No more scheduled events.", title_size, rgba(default_color,1))
+        local no_text = "No more scheduled events."
+        if filter_23_hrs then
+            no_text = "No more events soon..."
+        end
+        text(split_x, y, no_text, title_size, rgba(default_color,1))
         print("No more events in the schedule")
         -- Time
         text(split_x - 120, y, ":(", time_size, rgba(default_color,1))
