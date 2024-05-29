@@ -15,7 +15,6 @@ var config = {
             <option value="room">Room Name</option>
             <option value="day">Day</option>
             <option value="clock">Clock</option>
-            <option value="track_key">Track Key</option>
           </select>
         </div>
         <div class='col-xs-3'>

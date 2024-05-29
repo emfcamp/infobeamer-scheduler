@@ -637,27 +637,6 @@ local function view_clock(starts, ends, config, x1, y1, x2, y2, events)
     end
 end
 
-local function view_track_key(starts, ends, config, x1, y1, x2, y2, events)
-
-    local a = anims.Area(x2 - x1, y2 - y1)
-
-    local S = starts
-    local E = ends
-    local function text(...)
-        return a.add(anims.moving_font(S, E, font, ...))
-    end
-
-    local font_size = config.font_size or 35
-    font_size = font_size / 2
-    local text_color = {helper.parse_rgb(config.color or "#ffffff")}
-    local x = x1
-    for idx, track in ipairs(tracks) do
-        local w = font:width(track.display_name, font_size)+font_size
-        text(x, y1, track.display_name, font_size, rgba(text_color, 1))
-        x = x + w
-    end
-end
-
 function M.task(starts, ends, config, x1, y1, x2, y2)
     check_next_talk()
     local event_datasource = {
@@ -692,8 +671,7 @@ function M.can_show(config)
        mode == "clock" or
        mode == "all_talks" or
        mode == "attendee_events" or
-       mode == "next_workshops" or
-       mode == "track_key"
+       mode == "next_workshops"
     then
         return true
     end
