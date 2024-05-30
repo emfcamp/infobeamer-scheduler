@@ -31,7 +31,7 @@ def get_volunteering(url = "https://emfcamp.org/volunteer/info-beamer.json"):
         duration = end - start
 
         parsed_events.append(dict(
-            start = start,
+            #start = start,
             start_str = start.strftime('%H:%M'),
             end_str = end.strftime('%H:%M'),
             start_unix  = to_unixtimestamp(start),
