@@ -161,13 +161,7 @@ function M.updated_volunteering_json(new_list)
 
         talk.speaker_intro = ""
 
-        local default_color = {helper.parse_rgb("#ffffff")}
-        talk.track = tracks[talk.track] or {
-            name = talk.track,
-            background = fallback_track_background,
-            display_name = "",
-            color = rgba(default_color,1)
-        }
+        talk.track = nil
         next_volunteering_slots[idx] = talk
     end
     pp(next_volunteering_slots)
@@ -565,10 +559,11 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
             text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
         end
         -- track title
-        local track_text_size = math.floor(time_size * 0.7)
-        local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
-        text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color, 1))
-
+        if talk.track then
+            local track_text_size = math.floor(time_size * 0.7)
+            local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
+            text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color, 1))
+        end
         if talk.requires_ticket then
             -- "/u1F39F" 🎫 U+1F3AB
             -- Requires ticket
