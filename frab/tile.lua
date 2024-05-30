@@ -161,9 +161,12 @@ function M.updated_volunteering_json(new_list)
 
         talk.speaker_intro = ""
 
+        local default_color = {helper.parse_rgb("#ffffff")}
         talk.track = tracks[talk.track] or {
             name = talk.track,
             background = fallback_track_background,
+            display_name = "",
+            color = rgba(default_color,1)
         }
         next_volunteering_slots[idx] = talk
     end
