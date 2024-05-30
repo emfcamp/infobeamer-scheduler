@@ -685,7 +685,6 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         room = view_room,
         day = view_day,
         clock = view_clock,
-        track_key = view_track_key
     })[config.mode or 'all_talks'](starts, ends, config, x1, y1, x2, y2, event_datasource[config.mode or 'none'])
 end
 
