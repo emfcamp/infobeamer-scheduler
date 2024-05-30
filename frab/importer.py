@@ -8,6 +8,51 @@ import dateutil.tz
 import defusedxml.ElementTree as ET
 import json
 
+def request_json(url):
+    r = requests.get(url)
+    r.raise_for_status()
+    return json.loads(r.content)
+
+def get_volunteering(url = "https://emfcamp.org/volunteer/info-beamer.json"):
+
+    def to_unixtimestamp(dt):
+        dt = start.astimezone(pytz.utc)
+        ts = int(calendar.timegm(dt.timetuple()))
+        return ts
+    data = request_json(url)
+    parsed_events = []
+
+
+    for event in data["urgent_shifts"]:
+
+        start = dateutil.parser.parse(event["start"])
+
+        end = dateutil.parser.parse(event["end"])
+        duration = end - start
+
+        parsed_events.append(dict(
+            start = start,
+            start_str = start.strftime('%H:%M'),
+            end_str = end.strftime('%H:%M'),
+            start_unix  = to_unixtimestamp(start),
+            end_unix = to_unixtimestamp(end),
+            duration = int(duration.total_seconds() / 60),
+            title = event['role'],
+            track = "Urgent",
+            place = event['venue'],
+            abstract = "",
+            lang = '', # Not in EMF struct
+            id = str(event['id']),
+            is_from_cfp = False,
+            age_range = "People needed: " + (event["max_needed"] - event["current"]),
+            content_note = "",
+            requires_ticket = False,
+            group = "Primary"
+        ))
+
+    return parsed_events
+
+
 def get_schedule(url, group, timezone = "UTC"):
     def load_events_emf_json(json_str):
         def to_unixtimestamp(dt):

@@ -14,6 +14,7 @@ local rooms = {}
 local next_talks = {} -- List of all events up next from any defined room
 local next_attendee_events = {}
 local next_workshops = {} -- List of upcoming cfp events which are workshows
+local next_volunteering_slots = {} -- List of urgent / non_urgent volunteering slots that need filling
 local current_room
 local current_talk
 local other_talks = {}
@@ -143,6 +144,29 @@ function M.updated_schedule_json(new_schedule)
         end
     end
     pp(schedule)
+end
+
+function M.updated_volunteering_json(new_list)
+    print "new volunteering"
+    next_volunteering_slots = {}
+
+
+    for idx = #new_list, 1, -1 do
+        local talk = new_list[idx]
+        -- Hack to allow all venues on if there's a room called ANY
+
+        if talk.lang ~= "" and show_language_tags then
+            talk.title = talk.title .. " (" .. talk.lang .. ")"
+        end
+
+        talk.speaker_intro = ""
+
+        talk.track = tracks[talk.track] or {
+            name = talk.track,
+            background = fallback_track_background,
+        }
+        next_volunteering_slots[idx] = talk
+    end
 end
 
 local function wrap(str, font, size, max_w)
@@ -644,6 +668,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         all_talks = next_talks,
         attendee_events = next_attendee_events,
         next_workshops = next_workshops,
+        next_volunteering = next_volunteering_slots,
         none = nil
     }
     local mode = config.mode or 'all_talks'
@@ -655,6 +680,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         all_talks = view_event_list,
         attendee_events = view_event_list,
         next_workshops = view_event_list,
+        next_volunteering = view_event_list,
 
         room = view_room,
         day = view_day,

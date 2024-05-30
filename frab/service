@@ -82,6 +82,11 @@ def main():
 
         print >>sys.stderr, "updated schedule"
 
+        # Volunteering is already a sorted list, just pass it straight through
+        node.write_json("volunteering.json", importer.get_volunteering())
+
+        print >>sys.stderr, "updated volunteering"
+
         deadline = time.time() + 60*10
         while time.time() < deadline:
             now, ts = current_time()
