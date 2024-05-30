@@ -149,7 +149,7 @@ end
 function M.updated_volunteering_json(new_list)
     print "new volunteering"
     next_volunteering_slots = {}
-
+    pp(new_list)
 
     for idx = #new_list, 1, -1 do
         local talk = new_list[idx]
@@ -167,6 +167,7 @@ function M.updated_volunteering_json(new_list)
         }
         next_volunteering_slots[idx] = talk
     end
+    pp(next_volunteering_slots)
 end
 
 local function wrap(str, font, size, max_w)
