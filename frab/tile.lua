@@ -558,9 +558,9 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
             local w = font:width(time, time_size)+time_size
             text(x+split_x-w, y, time, time_size, rgba(default_color,.8))
         end
+        local track_text_size = math.floor(time_size * 0.7)
         -- track title
         if talk.track then
-            local track_text_size = math.floor(time_size * 0.7)
             local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
             text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color, 1))
         end
