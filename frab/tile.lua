@@ -596,11 +596,13 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         y = y + duration_size
 
         -- track bar
-        a.add(anims.moving_image_raw(
-            S, E, talk.track.background,
-            x+split_x-25, y_start, x+split_x-12,
-            y
-        ))
+        if talk.track then
+            a.add(anims.moving_image_raw(
+                S, E, talk.track.background,
+                x+split_x-25, y_start, x+split_x-12,
+                y
+            ))
+        end
 
         -- Space ready for the next event
         y = y + 20
