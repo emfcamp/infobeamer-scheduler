@@ -43,7 +43,6 @@ var config = {
       <template  v-if='mode == "track_key"'>
         <h4>Track key options</h4>
         <p>This shows a track key across the bottom. It currently has no options.</p>
-        </div>
       </template>
       <template  v-if='mode == "attendee_events"'>
         <h4>Attendee Event options</h4>
@@ -62,7 +61,7 @@ var config = {
         <p>This mode displays all events of a given type.</p>
         <div class='row'>
           <div class='col-xs-3'>
-            <small>Track names (csv)</
+            <small>Track names (csv)</small>
             <input
               type="text"
               v-model="event_tracks"
