@@ -257,7 +257,7 @@ local function check_next_talk(config)
         if filter_23_hrs then
             is_within_time = talk.start_unix < now + (60*60*23)
         end
-        if talk.start_unix > now and (is_within_time) and #next_talks < 50 then
+        if talk.start_unix > now and (is_within_time) and #next_talks < 100 then
 
             next_talks[#next_talks+1] = talk
             -- Have a separate list of events attendee submitted (not from the approved call for participation)
