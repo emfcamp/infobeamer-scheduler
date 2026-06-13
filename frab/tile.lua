@@ -14,6 +14,7 @@ local rooms = {}
 local next_talks = {} -- List of all events up next from any defined room
 local next_attendee_events = {}
 local next_workshops = {} -- List of upcoming cfp events which are workshows
+local next_events_of_track = {} -- List of upcoming events from configured tracks (types)
 local next_volunteering_slots = {} -- List of urgent / non_urgent volunteering slots that need filling
 local current_room
 local current_talk
@@ -21,7 +22,6 @@ local other_talks = {}
 local day = 0
 local show_language_tags = true
 local any_venue_room_name = "ANY"
-local emf_event_type_talk = "talk"
 local emf_event_type_workshop = "workshop"
 local just_started_mins = 5 -- Amount of time a event has "just started"
 local filter_23_hrs = false
@@ -30,6 +30,16 @@ local M = {}
 
 local function rgba(base, a)
     return base[1], base[2], base[3], a
+end
+
+-- Check if table 'tab' has a key of value 'val'
+local function has_value (tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+    return false
 end
 
 -- Handle the "ANY" room mode where we need to get either the short name
@@ -190,7 +200,7 @@ local function wrap(str, font, size, max_w)
     return lines
 end
 
-local function check_next_talk()
+local function check_next_talk(config)
     local now = api.clock.unix()
     print("Checking next talk")
 
@@ -198,6 +208,13 @@ local function check_next_talk()
     next_talks = {}
     next_attendee_events = {}
     next_workshops = {}
+    next_events_of_track = {}
+
+    local event_tracks_filter = config.event_tracks or ""
+    local event_tracks = {}
+    for event in event_tracks_filter:gmatch('[^,%s]+') do
+        event_tracks[#event_tracks+1] = event
+    end
 
     local room_now = {} -- Event that appears as up next or now in each venue
     for idx = 1, #schedule do
@@ -227,6 +244,10 @@ local function check_next_talk()
             elseif string.find(talk.track.name, emf_event_type_workshop) then
                 next_workshops[#next_workshops+1] = talk
             end
+            if #event_tracks == 0 or has_value(event_tracks, talk.track.name)
+            then
+                next_events_of_track[#next_events_of_track+1] = talk
+            end
         end
 
         -- Starting soon
@@ -245,11 +266,16 @@ local function check_next_talk()
             elseif string.find(talk.track.name, emf_event_type_workshop) then
                 next_workshops[#next_workshops+1] = talk
             end
+            if #event_tracks == 0 or has_value(event_tracks, talk.track.name)
+            then
+                next_events_of_track[#next_events_of_track+1] = talk
+            end
         end
     end
 
     print("Found " .. #next_talks .. " next events")
     print("Found " .. #next_attendee_events .. " attendee events")
+    print("Found " .. #next_events_of_track .. " events of given type filter")
 
     if not current_room then
         return
@@ -663,13 +689,14 @@ local function view_clock(starts, ends, config, x1, y1, x2, y2, events)
 end
 
 function M.task(starts, ends, config, x1, y1, x2, y2)
-    check_next_talk()
+    check_next_talk(config)
     local event_datasource = {
         other_talks = other_talks,
         all_talks = next_talks,
         attendee_events = next_attendee_events,
         next_workshops = next_workshops,
         next_volunteering = next_volunteering_slots,
+        next_events_of_track = next_events_of_track,
         none = nil
     }
     local mode = config.mode or 'all_talks'
@@ -682,7 +709,7 @@ function M.task(starts, ends, config, x1, y1, x2, y2)
         attendee_events = view_event_list,
         next_workshops = view_event_list,
         next_volunteering = view_event_list,
-
+        next_events_of_track = view_event_list,
         room = view_room,
         day = view_day,
         clock = view_clock,
@@ -697,7 +724,8 @@ function M.can_show(config)
        mode == "clock" or
        mode == "all_talks" or
        mode == "attendee_events" or
-       mode == "next_workshops"
+       mode == "next_workshops" or
+       mode == "next_events_of_track"
     then
         return true
     end

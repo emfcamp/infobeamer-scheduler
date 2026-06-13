@@ -9,6 +9,7 @@ var config = {
             <option value="all_talks">All Events from Defined Rooms</option>
             <option value="attendee_events">All non-CfP Events</option>
             <option value="next_workshops">Next CfP Workshops</option>
+            <option value="next_events_of_track">Next of Event Tracks</option>
             <option value="next_talk">Next in this Room</option>
             <option value="other_talks">Next in other defined Rooms</option>
             <option value="room_info">Room Info</option>
@@ -54,6 +55,20 @@ var config = {
         <h4>Next workshops options</h4>
         <p>This mode displays all cfp workshops coming up.</p>
         <div class='row'>
+        </div>
+      </template>
+      <template  v-if='mode == "next_events_of_track"'>
+        <h4>Next of Event Type options</h4>
+        <p>This mode displays all events of a given type.</p>
+        <div class='row'>
+          <div class='col-xs-3'>
+            <small>Track names (csv)</
+            <input
+              type="text"
+              v-model="event_tracks"
+              placeholder="workshop,youthworkshop"
+              class='form-control'/>
+          </div>
         </div>
       </template>
       <template  v-if='mode == "all_talks"'>
@@ -140,6 +155,7 @@ var config = {
     clock_align: ChildTile.config_value('clock_align', 'left'),
     day_align: ChildTile.config_value('day_align', 'left'),
     day_template: ChildTile.config_value('day_template', 'Day %d'),
+    event_tracks: ChildTile.config_value('event_tracks', '')
   }
 }
 
