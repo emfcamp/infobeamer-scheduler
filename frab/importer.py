@@ -72,9 +72,6 @@ def get_schedule(url, group, timezone = "Europe/London"):
         for event in all_events():
 
             speaker = event['names'].strip() if event['names'] else None
-            # Remove stuff like "Arcade with Arcade"
-            if speaker and event['venue'].strip() == speaker:
-                speaker = None
             if speaker and event["pronouns"]:
                 speaker += " - " + event['pronouns']
             if not "occurrences" in event:
@@ -86,6 +83,11 @@ def get_schedule(url, group, timezone = "Europe/London"):
 
                 end = dateutil.parser.parse(occurence["end_date"] + " BST", tzinfos={'BST': BST})
                 duration = end - start
+
+                # Remove stuff like "Arcade with Arcade"
+                if speaker and occurence['venue'].strip() == speaker:
+                    speaker = None
+
                 parsed_events.append(dict(
                     start = start,
                     start_str = start.strftime('%H:%M'),
