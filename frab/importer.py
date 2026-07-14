@@ -71,7 +71,7 @@ def get_schedule(url, group, timezone = "Europe/London"):
 
         for event in all_events():
 
-            speaker = event['speaker'].strip() if event['speaker'] else None
+            speaker = event['names'].strip() if event['names'] else None
             # Remove stuff like "Arcade with Arcade"
             if speaker and event['venue'].strip() == speaker:
                 speaker = None
