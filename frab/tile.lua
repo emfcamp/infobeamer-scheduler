@@ -380,10 +380,10 @@ local function view_next_talk(starts, ends, config, x1, y1, x2, y2, events)
         local track_size  = time_size
         while (track_width > col2 - 50) do
             track_size = math.floor(track_size * 0.7)
-            track_width = font:width(current_talk.track.display_name, track_size)
+            track_width = font:width(tracks[current_talk.track.name].display_name, track_size)
         end
         -- track title
-        text(col1, y_track_title, current_talk.track.display_name, track_size, rgba(current_talk.track.color, 1))
+        text(col1, y_track_title, tracks[current_talk.track.name].display_name, track_size, rgba(current_talk.track.color, 1))
 
         -- Title
 
@@ -590,8 +590,8 @@ local function view_event_list(starts, ends, config, x1, y1, x2, y2, events)
         if talk.track then
             print("Track info:")
             pp(talk.track)
-            local width = font:width(talk.track.display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
-            text(x+split_x-width, y+time_size, talk.track.display_name, track_text_size, rgba(talk.track.color, 1))
+            local width = font:width(tracks[talk.track.name].display_name, track_text_size)+time_size -- Add the width of one time character as a right padding
+            text(x+split_x-width, y+time_size, tracks[talk.track.name].display_name, track_text_size, rgba(talk.track.color, 1))
         end
         if talk.requires_ticket then
             -- "/u1F39F" 🎫 U+1F3AB
