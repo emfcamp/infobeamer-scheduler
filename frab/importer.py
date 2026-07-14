@@ -53,7 +53,7 @@ def get_volunteering(url = "https://emfcamp.org/volunteer/info-beamer.json"):
     return parsed_events
 
 
-def get_schedule(url, group, timezone = "UTC"):
+def get_schedule(url, group, timezone = "Europe/London"):
     def load_events_emf_json(json_str):
         def to_unixtimestamp(dt):
             dt = start.astimezone(pytz.utc)
@@ -65,13 +65,11 @@ def get_schedule(url, group, timezone = "UTC"):
             return json.loads(json_str)
 
         parsed_events = []
-        for event in all_events():
-            # EMF schedule is in BST. The unix "now" calculations expect UTC
-            BST = dateutil.tz.gettz('Europe/London')
-            start = dateutil.parser.parse(event["start_date"] + " BST", tzinfos={'BST': BST})
 
-            end = dateutil.parser.parse(event["end_date"] + " BST", tzinfos={'BST': BST})
-            duration = end - start
+        # EMF schedule is in BST. The unix "now" calculations expect UTC
+        BST = dateutil.tz.gettz(timezone)
+
+        for event in all_events():
 
             speaker = event['speaker'].strip() if event['speaker'] else None
             # Remove stuff like "Arcade with Arcade"
@@ -79,28 +77,37 @@ def get_schedule(url, group, timezone = "UTC"):
                 speaker = None
             if speaker and event["pronouns"]:
                 speaker += " - " + event['pronouns']
-            parsed_events.append(dict(
-                start = start,
-                start_str = start.strftime('%H:%M'),
-                end_str = end.strftime('%H:%M'),
-                start_unix  = to_unixtimestamp(start),
-                end_unix = to_unixtimestamp(end),
-                duration = int(duration.total_seconds() / 60),
-                title = event['title'],
-                track = event['type'],
-                place = event['venue'],
-                abstract = event['description'],
-                speakers = [
-                    speaker
-                ] if speaker else [],
-                lang = '', # Not in EMF struct
-                id = str(event['id']),
-                is_from_cfp = event['is_from_cfp'],
-                age_range = event['age_range'] if ('age_range' in event and event['age_range']) else ("Family Friendly" if ('is_family_friendly' in event and event['is_family_friendly']) else ""),
-                content_note = event['content_note'] if ('content_note' in event) else "",
-                requires_ticket = event['requires_ticket'] if ('requires_ticket' in event) else False,
-                group = group
-            ))
+            if not "occurrences" in event:
+                continue
+
+            for occurence in event['occurences']:
+
+                start = dateutil.parser.parse(occurence["start_date"] + " BST", tzinfos={'BST': BST})
+
+                end = dateutil.parser.parse(occurence["end_date"] + " BST", tzinfos={'BST': BST})
+                duration = end - start
+                parsed_events.append(dict(
+                    start = start,
+                    start_str = start.strftime('%H:%M'),
+                    end_str = end.strftime('%H:%M'),
+                    start_unix  = to_unixtimestamp(start),
+                    end_unix = to_unixtimestamp(end),
+                    duration = int(duration.total_seconds() / 60),
+                    title = event['title'],
+                    track = event['type'],
+                    place = event['venue'],
+                    abstract = event['description'],
+                    speakers = [
+                        speaker
+                    ] if speaker else [],
+                    lang = '', # Not in EMF struct
+                    id = str(event['id']),
+                    is_from_cfp = event['is_from_cfp'],
+                    age_range = event['age_range'] if ('age_range' in event and event['age_range']) else ("Family Friendly" if ('is_family_friendly' in event and event['is_family_friendly']) else ""),
+                    content_note = event['content_note'] if ('content_note' in event) else "",
+                    requires_ticket = event['requires_ticket'] if ('requires_ticket' in event) else False,
+                    group = group
+                ))
         return parsed_events
 
 
