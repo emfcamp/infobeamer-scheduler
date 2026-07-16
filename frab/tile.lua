@@ -221,7 +221,15 @@ local function check_next_talk(config)
     for idx = 1, #schedule do
         local talk = schedule[idx]
 
-
+        -- Find now/next talk in each venue (room)
+        -- These are expected to be the stages (and maybe workshops?)
+        if current_room and (current_room.group == "*" or current_room.group == talk.group) then
+            if not room_now[talk.place] and
+                rooms[talk.place] and
+                talk.start_unix + just_started_mins * 60 > now then
+                room_now[talk.place] = talk
+            end
+        end
 
         -- Just started?
         if now > talk.start_unix and
@@ -229,14 +237,6 @@ local function check_next_talk(config)
            talk.start_unix + just_started_mins * 60 > now
         then
 
-            -- Find now/next talk in each venue (room)
-            -- These are expected to be the stages (and maybe workshops?)
-            if current_room and (current_room.group == "*" or current_room.group == talk.group) then
-                if not room_now[talk.place] and
-                    rooms[talk.place] then
-                    room_now[talk.place] = talk
-                end
-            end
             next_talks[#next_talks+1] = talk
             -- Have a separate list of events attendee submitted (not from the approved call for participation)
             if not talk.is_from_cfp
