@@ -76,14 +76,14 @@ def get_schedule(url, group, timezone = "Europe/London"):
                 speaker += " - " + event['pronouns']
             if not "occurrences" in event:
                 continue
-
+            print(event)
             for occurrence in event['occurrences']:
-
+                print(occurrence)
                 start = dateutil.parser.parse(occurrence["start_date"] + " BST", tzinfos={'BST': BST})
 
                 end = dateutil.parser.parse(occurrence["end_date"] + " BST", tzinfos={'BST': BST})
                 duration = end - start
-
+                print(duration)
                 venue = occurrence['venue'].strip()
                 # Remove stuff like "Arcade with Arcade"
                 if speaker and venue == speaker:
@@ -93,7 +93,7 @@ def get_schedule(url, group, timezone = "Europe/London"):
                     start = start,
                     start_str = start.strftime('%H:%M'),
                     end_str = end.strftime('%H:%M'),
-                    start_unix  = to_unixtimestamp(start),
+                    start_unix = to_unixtimestamp(start),
                     end_unix = to_unixtimestamp(end),
                     duration = int(duration.total_seconds() / 60),
                     title = event['title'],
