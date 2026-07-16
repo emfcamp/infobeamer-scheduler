@@ -226,7 +226,8 @@ local function check_next_talk(config)
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
             if not room_now[talk.place] and
                 rooms[talk.place] and
-                talk.start_unix + just_started_mins * 60 > now then
+                talk.start_unix + just_started_mins * 60 > now and
+                now < talk.end_unix then
                 room_now[talk.place] = talk
             end
         end
