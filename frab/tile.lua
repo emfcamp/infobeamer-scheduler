@@ -225,12 +225,12 @@ local function check_next_talk(config)
         -- These are expected to be the stages (and maybe workshops?)
         if current_room and (current_room.group == "*" or current_room.group == talk.group) then
             if not room_now[talk.place] then
-                print("Now and Next: Venue, Name, Now, Start, End:", talk.place, talk.name, now, talk.start_unix, talk.end_unix)
+                print("Now and Next: Venue, Title, Now, Start, End:", talk.place, talk.title, now, talk.start_unix, talk.end_unix)
                 if rooms[talk.place] and
                 talk.start_unix + just_started_mins * 60 > now and
                 now < talk.end_unix then
                     room_now[talk.place] = talk
-                    print("Selected talk as Now:", talk.name)
+                    print("Selected talk as Now:", talk.title)
                 end
             end
         end
