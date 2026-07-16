@@ -55,8 +55,8 @@ def get_volunteering(url = "https://emfcamp.org/volunteer/info-beamer.json"):
 
 def get_schedule(url, group, timezone = "Europe/London"):
     def load_events_emf_json(json_str):
-        def to_unixtimestamp(dt):
-            dt = start.astimezone(pytz.utc)
+        def to_unixtimestamp(time):
+            dt = time.astimezone(pytz.utc)
             ts = int(calendar.timegm(dt.timetuple()))
             return ts
 
@@ -76,14 +76,11 @@ def get_schedule(url, group, timezone = "Europe/London"):
                 speaker += " - " + event['pronouns']
             if not "occurrences" in event:
                 continue
-            print(event)
             for occurrence in event['occurrences']:
-                print(occurrence)
                 start = dateutil.parser.parse(occurrence["start_date"] + " BST", tzinfos={'BST': BST})
 
                 end = dateutil.parser.parse(occurrence["end_date"] + " BST", tzinfos={'BST': BST})
                 duration = end - start
-                print(duration)
                 venue = occurrence['venue'].strip()
                 # Remove stuff like "Arcade with Arcade"
                 if speaker and venue == speaker:
@@ -111,6 +108,7 @@ def get_schedule(url, group, timezone = "Europe/London"):
                     requires_ticket = event['drop_in'] == False if ('drop_in' in event) else False,
                     group = group
                 ))
+
         return parsed_events
 
 
